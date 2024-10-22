@@ -17,3 +17,4 @@ docker pull stargazernex/lbproject:<Version>
 ```
 Lembrar de substituir <Version> pela versão da imagem mais recente.
 
+Alternativamente, será possivel simplesmente usar o Dockerfile deste repositório.
