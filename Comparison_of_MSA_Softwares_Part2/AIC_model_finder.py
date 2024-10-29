@@ -1,5 +1,4 @@
 import sys, os, gzip, re
-from pathlib import Path
 
 def AIC_model_finder(aligned_file, nt=1):
     """
@@ -21,9 +20,9 @@ def AIC_model_finder(aligned_file, nt=1):
         probably will be written in the file. If not, it will return a message saying the model wasn`t found, 
         otherwise it will return the model as a string.
     """
-    aligned_file_directory = Path(aligned_file).parent
+    aligned_file_directory = os.path.dirname(os.path.abspath(aligned_file))
     model_file = f"{aligned_file}.model"
-    model_file_path = aligned_file_directory / f"{model_file}.gz"
+    model_file_path = os.path.join(aligned_file_directory, f"{model_file}.gz")
 
     os.system(f"iqtree2 -s {aligned_file} -m MFP -nt {nt}")
 
