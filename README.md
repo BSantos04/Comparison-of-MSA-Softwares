@@ -1,20 +1,19 @@
-# Comparação de _Softwares_ de Alinhamento
+# Alignment Softwares Comparison
 
-## Descrição
+## Description
 
-Ferramenta que irá avaliar _Softwares_ de Alinhamento, entre eles o MAFFT, MUSCLE e o T-Coffee, para uma seleção objetiva de qual o melhor.
+This tool will evaluate some Alignment Softwares, amongst them there is MAFFT, MSCLE and T-Coffee. Helping us decide which is objectively better.
 
-## Pré-Requisitos
+
+## Requirements
 - Docker
 - 
 - 
 
 ## Preparação
 
-Para que tudo corra _smoothly_, vamos trabalhar dentro de um docker. Para adquirir a imagem com os programas necessários, vamos buscar o que for mais recente no repositório deste projeto no [DockerHub](https://hub.docker.com/r/stargazernex/lbproject/tags).
+For everything to run smoothly, we will be working inside a docker. To acquire a docker image with the necessary programs, we will pull the last version of the image from this project's [DockerHub](https://hub.docker.com/r/stargazernex/lbproject/tags).
 ```
 docker pull stargazernex/lbproject:<Version>
 ```
-Lembrar de substituir <Version> pela versão da imagem mais recente.
-
-Alternativamente, será possivel simplesmente usar o Dockerfile deste repositório.
+Remember to swap <Version> for the last version available in the DockerHub. Alternatively, you may also use the Dockerfile in this repository
