@@ -15,7 +15,7 @@ def get_score_matrix(match=1, mismatch=-1):
     """
     #Define the nucleotides that will be part of the pair comparison and an empty dictionary that will contain 
     #all possible pair combinations for the defined nucleotides and their respective score
-    bases = ["A", "T", "G", "C", "a", "t", "c", "g"]
+    bases = ["A", "T", "G", "C"]
     score_matrix = {}
     
     #Filling the score matrix with all possible pair combinations, defining each pair with equal nucelotides with 
@@ -42,6 +42,25 @@ def sp_score(aligned_file, score_matrix, gap_penalty=-1):
     Returns:
         -score: SP-Score calculated by the function.
     """
+    #Converting every characters of the aligned file upper case
+    with open(aligned_file, "r+") as file:
+        
+        #Read the file content
+        seqs = file.read()
+        
+        #Converting the file content to upper case
+        seqs = seqs.upper()
+        
+        #Go back to the start of the file
+        file.seek(0)
+        
+        #Overwrite the upper case content in the file
+        file.write(seqs)
+        
+        #Remove the previous content of the file and close it
+        file.truncate()
+        file.close()
+        
     #Create an AlignIO object for the aligned file used and an "empty" integer object for the score to be calculated
     alignment = AlignIO.read(aligned_file, "fasta")
     score = 0
