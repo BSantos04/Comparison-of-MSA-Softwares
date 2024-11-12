@@ -16,7 +16,7 @@ def get_score_matrix(match=1, mismatch=-1):
     """
     #Define the nucleotides that will be part of the pair comparison and an empty dictionary that will contain 
     #all possible pair combinations for the defined nucleotides and their respective score
-    bases = ["A", "T", "G", "C", "a", "t", "c", "g"]
+    bases = ["A", "T", "G", "C"]
     score_matrix = {}
     
     #Filling the score matrix with all possible pair combinations, defining each pair with equal nucelotides with 
