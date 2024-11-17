@@ -1,0 +1,2 @@
+#This command-line will run the T-Coffee software, taking an aligned protein file and evaluating the level of conservation of it using the BLOSUM62 scoring matrix, passing the resulting score of the evaluation process as well as other info such as the aligned sequences into an html file
+t_coffee -other_pg seq_reformat -in {aligned_file} -action +evaluate blosum62mt -output score_html > {aligned_file}.html
