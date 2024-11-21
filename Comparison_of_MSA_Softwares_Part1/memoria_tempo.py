@@ -4,6 +4,7 @@ def memoria_tempo(comando):
     tempo_inicio=time.time()
     processo = os.system(comando)
     memoria_inicial=psutil.virtual_memory().used / (1024)
+    memoria_total=memoria_inicial
     try:
         while processo.poll():
             memoria_total_c=psutil.virtual_memory().used / (1024)
