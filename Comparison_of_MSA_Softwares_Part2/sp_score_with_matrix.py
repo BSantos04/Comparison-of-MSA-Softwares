@@ -74,6 +74,9 @@ def pairwise_score(seq1, seq2):
 
     #Looping through pairs of characters from the two sequences
     for a, b in zip(seq1, seq2):
+        #If both sites have gaps, the score will ignore it
+        if a == "-" and b == "-":
+            continue
         #Calculating the score if either character of the two sequences is a gap based on the next characters
         if a == "-" or b == "-":
             if a == "-":
