@@ -11,7 +11,7 @@ flake8:
   script:
     - python --version
     - pip install flake8
-    - flake8 --config ~/.config/flake8
+    - flake8 --config ~/.config/flake8/
     - flake8 Comparison_of_MSA_Softwares_Part1/
     - flake8 Comparison_of_MSA_Softwares_Part2/
 
