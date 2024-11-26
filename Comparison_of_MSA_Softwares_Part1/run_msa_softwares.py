@@ -1,6 +1,7 @@
 import os
 import sys
 
+
 def mafft(input_file):
     """
     Summary:
@@ -24,6 +25,7 @@ def mafft(input_file):
     #Get the path to the output file using the directory obtain previously
     aligned_file = os.path.join(pwd, f"{filename}_mafft_aln.fasta")
     return aligned_file
+
 
 def muscle(input_file):
     """
@@ -49,6 +51,7 @@ def muscle(input_file):
     aligned_file = os.path.join(pwd, f"{filename}_muscle_aln.fasta")
     return aligned_file
 
+
 def tcoffee(input_file):
     """
     Summary:
@@ -73,6 +76,7 @@ def tcoffee(input_file):
     aligned_file = os.path.join(pwd, f"{filename}_tcoffee_aln.fasta")
     return aligned_file
 
+
 def clustalomega(input_file):
     """
     Summary:
@@ -96,6 +100,7 @@ def clustalomega(input_file):
     #Get the path to the output file using the directory obtain previously
     aligned_file = os.path.join(pwd, f"{filename}_clustalo_aln.fasta")
     return aligned_file
+
 
 if __name__ == "__main__":
     if len(sys.argv)!=2:
