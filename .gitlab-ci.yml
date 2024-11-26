@@ -4,7 +4,6 @@ default:
 stages:
   - lint
   - test
-  - deploy
 
 
 flake8:
@@ -13,20 +12,9 @@ flake8:
     - python --version
     - pip install flake8
     - flake8 src/
-  only:
-    - merge_requests
 
 
 test:
   stage: test
   script:
     - echo python manage.py test
-  only:
-    - merge_requests
-
-deploy:
-  stage: deploy
-  script:
-    - echo "Deploying now!"
-  only:
-    - merge_requests
