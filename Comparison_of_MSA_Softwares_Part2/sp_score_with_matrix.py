@@ -36,6 +36,7 @@ def read_scoring_matrix(file, parse_matrix=lambda x: x):
 
 # Opens the matrix file and runs the previous function, turining the generated matrix object into a dictionary object
 
+
 with open(sys.argv[2]) as f:
     matrix = dict(read_scoring_matrix(f))
     scoring_matrix = {key: int(value) for key, value in matrix.items()}
