@@ -1,4 +1,6 @@
-import time, os, psutil
+import time
+import os
+import psutil
 
 
 def memoria_tempo(comando):
