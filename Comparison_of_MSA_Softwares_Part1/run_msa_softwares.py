@@ -103,7 +103,7 @@ def clustalomega(input_file):
 
 
 if __name__ == "__main__":
-    if len(sys.argv)!=2:
+    if len(sys.argv) != 2:
         print("Usage: python3 {path/to/script.py} {path/to/input/file.fasta}")
     else:
         mafft_aln = mafft(sys.argv[1])
@@ -118,5 +118,6 @@ if __name__ == "__main__":
             print(seqs.read())
         with open(clustalo_aln, "r") as seqs:
             print(seqs.read())
+
 
             
