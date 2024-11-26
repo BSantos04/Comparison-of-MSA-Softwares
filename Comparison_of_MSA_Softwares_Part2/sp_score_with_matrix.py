@@ -15,7 +15,7 @@ def read_scoring_matrix(file, parse_matrix=lambda x: x):
         it returns the value unchanged.
 
     Returns:
-        ((row_id, col_id), parse_matrix(matrix_cell)): This command-line represents the Python matrix object "returned" 
+        ((row_id, col_id), parse_matrix(matrix_cell)): This command-line represents the Python matrix object "returned"
         by the function. Since we are generating the scoring matrix by processing the matrix file row by row and cell by cell,
         we can't use the 'return' method, so instead we are using the 'yield' method.
 
@@ -34,10 +34,12 @@ def read_scoring_matrix(file, parse_matrix=lambda x: x):
         for col_id, matrix_cell in zip(header, row[1:]):
             yield ((row_id, col_id), parse_matrix(matrix_cell))
 
-# Opens the matrix file and runs the previous function, turining the generated matrix object into a dictionary object 
+# Opens the matrix file and runs the previous function, turining the generated matrix object into a dictionary object
+
 with open(sys.argv[2]) as f:
     matrix = dict(read_scoring_matrix(f))
     scoring_matrix = {key: int(value) for key, value in matrix.items()}
+
 
 def affine_gap_penalty(gap_len, gapO=-5, gap_ext=-2):
     """
@@ -55,10 +57,11 @@ def affine_gap_penalty(gap_len, gapO=-5, gap_ext=-2):
     """
     return gapO + gap_len * gap_ext
 
+
 def pairwise_score(seq1, seq2):
     """
     Summary:
-        This function calculates the pairwise score of two sequences of an aligned file based on the generated matrix and 
+        This function calculates the pairwise score of two sequences of an aligned file based on the generated matrix and
         the gap penalties previously defined.
     
     Parameters:
@@ -73,9 +76,9 @@ def pairwise_score(seq1, seq2):
     score = 0
     gap1, gap2 = 0, 0
 
-    #Looping through pairs of characters from the two sequences
+    # Looping through pairs of characters from the two sequences
     for a, b in zip(seq1, seq2):
-        #If both sites have gaps, the score will ignore it
+        # If both sites have gaps, the score will ignore it
         if a == "-" and b == "-":
             continue
         # Calculating the score if either character of the two sequences is a gap based on the next characters
@@ -110,6 +113,7 @@ def pairwise_score(seq1, seq2):
 
     return score
 
+
 def sp_score(aligned_file):
     """
     Summary:
@@ -141,10 +145,11 @@ def sp_score(aligned_file):
     
     return sp_score
 
+
 if __name__ == "__main__":
     """
     Summary:
-        This function orquestrates the entire process of the script and ensures that the code is only executed when 
+        This function orquestrates the entire process of the script and ensures that the code is only executed when
         the script is run as a standalone program.
     """
     # Prints a message if the script command-line does not comply the number of parameters
