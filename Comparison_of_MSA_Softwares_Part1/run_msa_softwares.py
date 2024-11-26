@@ -4,7 +4,8 @@ import sys
 def mafft(input_file):
     """
     Summary:
-        This function runs the MAFFT command line in order to proceed with the alignemnt of the sequences in the input file
+        This function runs the MAFFT command line in order to proceed with 
+        the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
@@ -27,7 +28,8 @@ def mafft(input_file):
 def muscle(input_file):
     """
     Summary:
-        This function runs the MUSCLE command line in order to proceed with the alignemnt of the sequences in the input file
+        This function runs the MUSCLE command line in order to proceed with
+        the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
@@ -50,7 +52,8 @@ def muscle(input_file):
 def tcoffee(input_file):
     """
     Summary:
-        This function runs the T-Coffee command line in order to proceed with the alignemnt of the sequences in the input file
+        This function runs the T-Coffee command line in order to proceed with 
+        the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
@@ -73,7 +76,8 @@ def tcoffee(input_file):
 def clustalomega(input_file):
     """
     Summary:
-        This function runs the ClustalOmega command line in order to proceed with the alignemnt of the sequences in the input file
+        This function runs the ClustalOmega command line in order to proceed 
+        with the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
