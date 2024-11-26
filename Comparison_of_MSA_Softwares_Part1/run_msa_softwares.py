@@ -5,24 +5,24 @@ import sys
 def mafft(input_file):
     """
     Summary:
-        This function runs the MAFFT command line in order to proceed with 
+        This function runs the MAFFT command line in order to proceed with
         the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
-        input_file: Input FASTA file that contains the sequences to be aligned. 
+        input_file: Input FASTA file that contains the sequences to be aligned.
     
     Returns:
         aligned_file: Path to the file aligned by the command line.
 
     """
-    #Specify the first name that we are going to use to specify the output file later
+    # Specify the first name that we are going to use to specify the output file later
     filename = input_file.split(".")[0]
-    #Run the command line for the MAFFT software
+    # Run the command line for the MAFFT software
     os.system(f"mafft {input_file} > {filename}_mafft_aln.fasta")
-    #Get the directory which the output file will be written
+    # Get the directory which the output file will be written
     pwd = os.getcwd()
-    #Get the path to the output file using the directory obtain previously
+    # Get the path to the output file using the directory obtain previously
     aligned_file = os.path.join(pwd, f"{filename}_mafft_aln.fasta")
     return aligned_file
 
@@ -35,19 +35,19 @@ def muscle(input_file):
         using the software.
     
     Parameters:
-        input_file: Input FASTA file that contains the sequences to be aligned. 
+        input_file: Input FASTA file that contains the sequences to be aligned.
     
     Returns:
         aligned_file: Path to the file aligned by the command line.
 
     """
-    #Specify the first name that we are going to use to specify the output file later
+    # Specify the first name that we are going to use to specify the output file later
     filename = input_file.split(".")[0]
-    #Run the command line for the MUSCLE software
+    # Run the command line for the MUSCLE software
     os.system(f"muscle -align {input_file} -output {filename}_muscle_aln.fasta")
-    #Get the directory which the output file will be written
+    # Get the directory which the output file will be written
     pwd = os.getcwd()
-    #Get the path to the output file using the directory obtain previously
+    # Get the path to the output file using the directory obtain previously
     aligned_file = os.path.join(pwd, f"{filename}_muscle_aln.fasta")
     return aligned_file
 
@@ -55,24 +55,24 @@ def muscle(input_file):
 def tcoffee(input_file):
     """
     Summary:
-        This function runs the T-Coffee command line in order to proceed with 
+        This function runs the T-Coffee command line in order to proceed with
         the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
-        input_file: Input FASTA file that contains the sequences to be aligned. 
+        input_file: Input FASTA file that contains the sequences to be aligned.
     
     Returns:
         aligned_file: Path to the file aligned by the command line.
 
     """
-    #Specify the first name that we are going to use to specify the output file later
+    # Specify the first name that we are going to use to specify the output file later
     filename = input_file.split(".")[0]
-    #Run the command line for the T-Coffee software
+    # Run the command line for the T-Coffee software
     os.system(f"t_coffee -in {input_file} -output fasta_aln -outfile {filename}_tcoffee_aln.fasta")
-    #Get the directory which the output file will be written
+    # Get the directory which the output file will be written
     pwd = os.getcwd()
-    #Get the path to the output file using the directory obtain previously
+    # Get the path to the output file using the directory obtain previously
     aligned_file = os.path.join(pwd, f"{filename}_tcoffee_aln.fasta")
     return aligned_file
 
@@ -80,24 +80,24 @@ def tcoffee(input_file):
 def clustalomega(input_file):
     """
     Summary:
-        This function runs the ClustalOmega command line in order to proceed 
+        This function runs the ClustalOmega command line in order to proceed
         with the alignemnt of the sequences in the input file
         using the software.
     
     Parameters:
-        input_file: Input FASTA file that contains the sequences to be aligned. 
+        input_file: Input FASTA file that contains the sequences to be aligned.
     
     Returns:
         aligned_file: Path to the file aligned by the command line.
 
     """
-    #Specify the first name that we are going to use to specify the output file later
+    # Specify the first name that we are going to use to specify the output file later
     filename = input_file.split(".")[0]
-    #Run the command line for the ClustalOmega software
+    # Run the command line for the ClustalOmega software
     os.system(f"clustalo -i {input_file} -o {filename}_clustalo_aln.fasta --outfmt fasta")
-    #Get the directory which the output file will be written
+    # Get the directory which the output file will be written
     pwd = os.getcwd()
-    #Get the path to the output file using the directory obtain previously
+    # Get the path to the output file using the directory obtain previously
     aligned_file = os.path.join(pwd, f"{filename}_clustalo_aln.fasta")
     return aligned_file
 
