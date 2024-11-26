@@ -118,6 +118,3 @@ if __name__ == "__main__":
             print(seqs.read())
         with open(clustalo_aln, "r") as seqs:
             print(seqs.read())
-
-
-            
