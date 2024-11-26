@@ -14,7 +14,7 @@ def memoria_tempo(comando):
             memoria_total = max(memoria_total_c)
     except Exception as erro_memoria:
         print(f"Erro ao determinar a memoria {erro_memoria}")
-    memoria_utilizada = memoria_total-memoria_inicial
-    tempo_utilizado = time.time()-tempo_inicio
+    memoria_utilizada = memoria_total - memoria_inicial
+    tempo_utilizado = time.time() - tempo_inicio
 
     return memoria_utilizada, tempo_utilizado
