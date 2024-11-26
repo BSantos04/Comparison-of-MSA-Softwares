@@ -18,3 +18,4 @@ def memoria_tempo(comando):
     tempo_utilizado = time.time()-tempo_inicio
 
     return memoria_utilizada, tempo_utilizado
+    
