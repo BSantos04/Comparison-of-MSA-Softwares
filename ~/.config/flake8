@@ -1,0 +1,5 @@
+
+# NOQA
+[flake8]
+ignore = E401
+max-line-length = 150
