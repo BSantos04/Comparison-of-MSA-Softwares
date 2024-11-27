@@ -3,6 +3,7 @@ default:
 
 stages:
   - lint
+  - analyze
   - test
 
 
@@ -13,7 +14,26 @@ flake8:
     - pip install flake8
     - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/
     - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/
+    - flake8 . --format = json --output-file = $LINT_OUTPUT
+  artifacts:
+    paths:
+      - $LINT_OUTPUT
 
+analyze:
+  stage: analyze
+  dependencies:
+    - lint
+  script:
+    - echo "comparing lint results..."
+    - if [ -f $PREVIOUS_LINT_OUTPUT ]; then
+        python compare_lint.py $PREVIOUS_LINT_OUTPUT $LINT_OUTPUT;
+      else
+        echo "No previous results to compare.";
+      fi
+    - cp $LINT_OUTPUT $PREVIOUS_LINT_OUTPUT
+  artifacts:
+    paths:
+      - $PREVIOUS_LINT_OUTPUT
 
 test:
   stage: test
