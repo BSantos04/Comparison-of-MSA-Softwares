@@ -5,7 +5,7 @@ import psutil
 
 def get_memory_and_time(command):
     """
-    Summary: 
+    Summary:
         This function gets the execution time and used memory of a process run by a command line.
         
     Parameters:
