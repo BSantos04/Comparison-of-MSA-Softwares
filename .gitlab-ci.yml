@@ -22,7 +22,7 @@ flake8:
 analyze:
   stage: analyze
   dependencies:
-    - lint
+    - flake8
   script:
     - echo "comparing lint results..."
     - if [ -f $PREVIOUS_LINT_OUTPUT ]; then
