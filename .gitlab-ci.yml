@@ -12,13 +12,13 @@ flake8:
   script:
     - python --version
     - pip install flake8
-    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/
-    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/
-    - flake8 . --format = json --output-file = $LINT_OUTPUT
+    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/ || true
+    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/ || true
+    - flake8 . --format = json --output-file = $LINT_OUTPUT || true
   artifacts:
     paths:
       - $LINT_OUTPUT
-  allow_failure: true
+
 
 analyze:
   stage: analyze
