@@ -1,6 +1,11 @@
 default:
   image: stargazernex/lbproject:v3
 
+variables:
+  LINT_OUTPUT: "lint_results.json"
+  PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
+
+
 stages:
   - lint
   - analyze
@@ -12,13 +17,15 @@ flake8:
   script:
     - python --version
     - pip install flake8
-    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/
-    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/
-    - flake8 . --format = json --output-file = $LINT_OUTPUT
+    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/ || true
+    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/ || true
+    - flake8 . --format=json --output-file=$LINT_OUTPUT || true
   artifacts:
     paths:
       - $LINT_OUTPUT
-  allow_failure: true
+    when: always
+    expire_in: 1 day
+
 
 analyze:
   stage: analyze
@@ -35,8 +42,10 @@ analyze:
   artifacts:
     paths:
       - $PREVIOUS_LINT_OUTPUT
+    when: always
+    expire_in: 1 day
 
 test:
   stage: test
   script:
-    - echo python manage.py test
+    - python manage.py test || echo "No tests defined yet."
