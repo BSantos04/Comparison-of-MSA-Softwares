@@ -21,7 +21,7 @@ class SPScore:
             parse_matrix: Function to transform the matrix values. Default returns values unchanged.
         
         Yields:
-            Tuple of ((row_id, col_id), parse_matrix(matrix_cell)).
+            ((row_id, col_id), parse_matrix(matrix_cell)): Tuple matrix containing each possible pair of nucleotides/proteins and their respective scores.
         """
         # Reading and splitting all the lines/rows of the matrix
         rows = (line.rstrip().split() for line in file)
@@ -29,7 +29,7 @@ class SPScore:
         # Extracting the headers/column identifiers of the matrix
         header = next(rows)
         
-        # Processing rows, specifying each row 
+        # Processing rows
         # Ensuring that every character is in upper case
         for row in rows:
             row_id = row[0].upper()
@@ -46,10 +46,11 @@ class SPScore:
             matrix_file: Path to the scoring matrix file.
         
         Returns:
-            Dictionary representing the scoring matrix with tuple keys (row_id, col_id) and integer values.
+            {key: int(value) for key, value in matrix.items()}: Dictionary representing the scoring matrix.
         """
+        # Open matrix file
         with open(matrix_file) as f:
-            # Use read_scoring_matrix to parse the file and convert it to a dictionary
+            # Parse the file and convert it into a dictionary
             matrix = dict(self.read_scoring_matrix(f))
             # Convert all values to integers
             return {key: int(value) for key, value in matrix.items()}
@@ -60,11 +61,11 @@ class SPScore:
         
         Parameters:
             gap_len: Length of the gap in an aligned sequence.
-            gapO: Gap opening penalty (default: -5).
-            gap_ext: Gap extension penalty per unit length (default: -2).
+            gapO: Gap opening penalty (default: -6).
+            gap_ext: Gap extension penalty per unit length (default: -1).
         
         Returns:
-            The affine gap penalty score.
+            gapO + gap_len * gap_ext: The affine gap penalty score formula.
         """
         return gapO + gap_len * gap_ext
 
@@ -77,12 +78,15 @@ class SPScore:
             seq2: Second sequence of the pair.
         
         Returns:
-            The total pairwise score for the given sequences.
+            score: The total pairwise score for the given sequences.
         """
+        # Define vraiables for the total score and number of gaps for both sequences with default values
         score = 0
         gap1, gap2 = 0, 0
 
         # Loop through pairs of characters from the two sequences
+        # For each match/mismatch, it will give the respective score for each pair of nucleotides/proteins
+        # If both match caharcters are gaps the code will skip and count it as zero
         for a, b in zip(seq1, seq2):
             if a == "-" and b == "-":
                 continue
@@ -106,11 +110,6 @@ class SPScore:
                     gap2 = 0
                 score += self.scoring_matrix.get((a, b), 0)
 
-        if gap1 > 0:
-            score += self.affine_gap_penalty(gap1)
-        if gap2 > 0:
-            score += self.affine_gap_penalty(gap2)
-
         return score
 
     def sp_score(self, aligned_file):
@@ -129,7 +128,7 @@ class SPScore:
         # Parsing the aligned FASTA file into an AlignIO object
         alignment = AlignIO.read(aligned_file, "fasta")
         
-        # Determine the number of sequences on the algned file and creating an int object to handle the sp_score value
+        # Determine the number of sequences on the aligned file and creating an object to handle the SP-Score value
         num_seqs = len(alignment)
         sp_score = 0
 
