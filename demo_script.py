@@ -300,7 +300,20 @@ class SPScore:
         return sp_score
     
 def overall_score(ref_info, sp_dict, mem_dict, time_dict):
+    """
+    Summary:
+        This function calculates the overall score for one alignment based on the SP-Score, memory and execution time values obtain.
     
+    Parameters:
+        ref_info: Information of the aligned that is going to be analyzed and we are calculating the overall score.
+        sp_dict: A dictionary containing the values of all SP-Scores of all alignments.
+        mem_dict: A dictionary containing the values of all used memories of all alignments.
+        time_dict: A dictionary containing the values of all execution times of all alignments.
+    
+    Returns:
+        score: Overall score for the reference alignment.
+
+    """
     # Get the aligned file path, used memory and execution time of the reference alignment
     aln, memory, exectime = ref_info
     
