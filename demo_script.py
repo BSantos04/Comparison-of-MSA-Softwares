@@ -5,7 +5,7 @@ import sys
 import psutil
 import shutil
 from Bio import AlignIO
-
+import matplotlib.pyplot as plt
 
 class msa_softwares:
     def __init__(self):
@@ -159,6 +159,32 @@ class msa_softwares:
         
         return aligned_file, memory_used, exec_time
     
+    def prank(self, input_file):
+        """
+        Runs the PRANK alignment command on the input file and returns the aligned file along with memory and execution time.
+        
+        Parameters:
+            input_file: Input FASTA file that contains the sequences to be aligned.
+        
+        Returns:
+            aligned_file: Path to the file aligned by the command line.
+            memory_used: Memory used during the execution of PRANK.
+            exec_time: Time taken for the execution of PRANK.
+        """
+        # Get the first name of the file based on the input file name
+        filename = input_file.split(".")[0]
+        # Define the command line to run the software PRANK
+        command = f"prank -d={input_file} -o={filename}_prank_aln"
+                
+        # Get execution time and used memory for that software
+        memory_used, exec_time = self.get_memory_and_time(command)
+                
+        # Get the directory which the output file will be written
+        pwd = os.getcwd()
+        aligned_file = os.path.join(pwd, f"{filename}_prank_aln.best.fas")
+        
+        return aligned_file, memory_used, exec_time
+    
 class SPScore:
     def __init__(self, matrix_file):
         """
@@ -167,7 +193,7 @@ class SPScore:
         Parameters:
             matrix_file: Path to the scoring matrix file in BLAST format.
         """
-        self.scoring_matrix = self._load_matrix(matrix_file)
+        self.scoring_matrix = self.load_matrix(matrix_file)
 
     def read_scoring_matrix(self, file, parse_matrix=lambda x: x):
         """
@@ -195,7 +221,7 @@ class SPScore:
             for col_id, matrix_cell in zip(header, row[1:]):
                 yield ((row_id, col_id), parse_matrix(matrix_cell))
 
-    def _load_matrix(self, matrix_file):
+    def load_matrix(self, matrix_file):
         """
         Opens the matrix file and processes it into a dictionary object.
         
@@ -333,18 +359,43 @@ def overall_score(ref_info, sp_dict, mem_dict, time_dict):
         sp_scores[i] += min_spscore
     
     # Normalize the SP-Score value in order to correspond to our overall score 
-    normalized_spscore = (aln_spscore*3.5)/max(sp_scores)
+    normalized_spscore = (aln_spscore*5)/max(sp_scores)
     
     # Noramlize the memory value in order to correspond to our overall score
     normalized_memory = (1/memory)/(1/min(mems))
     
     # Normalize the execution time value in order to corresponf to our overall score
-    normalized_time = ((1/exectime)*0.5)/(1/min(times))
+    normalized_time = ((1/exectime))/(1/min(times))
     
     # Calculate the score for the reference alignment
     score = normalized_spscore + normalized_memory + normalized_time
     
     return score
+
+def create_bar_plot(info_dict, ylabel, title):
+    
+    # Extract keys and values based on the given dictionary
+    labels = list(info_dict.keys())
+    values = list(info_dict.values())
+    
+    # Create the bar plot
+    plt.bar(labels, values, color="blue", width=0.5)
+    
+    # Add labels and a title
+    plt.xlabel("MSA Softwares")
+    plt.ylabel(f"{ylabel}")
+    plt.title(f"{title}")
+    
+    # Saving the plot into a file
+    filename = "_".join(title.split())
+    plot_file_path = os.path.abspath(f"{filename}.png")
+    plt.savefig(plot_file_path)
+    
+    # Free up memory by closing the plot
+    plt.close()
+    
+    return plot_file_path
+    
     
 # Just ensuring the code is only executed when the script is run as a standalone program.
 if __name__ == "__main__":
@@ -360,41 +411,53 @@ if __name__ == "__main__":
         muscle_info = msa.muscle(sys.argv[1])
         tcoffee_info = msa.tcoffee(sys.argv[1])
         clustalo_info = msa.clustalomega(sys.argv[1])
+        prank_info = msa.prank(sys.argv[1])
         
         # Get all returned objects from each alignment (aligned file, used memory and execution time)
         mafft_aln, mafft_memory, mafft_time = mafft_info
         muscle_aln, muscle_memory, muscle_time = muscle_info
         tcoffee_aln, tcoffee_memory, tcoffee_time = tcoffee_info
         clustalo_aln, clustalo_memory, clustalo_time = clustalo_info
+        prank_aln, prank_memory, prank_time = prank_info
         
         # Create a tuple containing all the info from all the sequences
-        all_info = (mafft_info, muscle_info, tcoffee_info, clustalo_info)
+        all_info = (mafft_info, muscle_info, tcoffee_info, clustalo_info, prank_info)
         
         # Get a dictionary of each parameter value of every MSA software
         msa_files = {"MAFFT": mafft_aln,
                     "MUSCLE": muscle_aln,
                     "T-Coffee": tcoffee_aln,
-                    "ClustalOmega": clustalo_aln}
+                    "ClustalOmega": clustalo_aln,
+                    "PRANK": prank_aln}
         
         memories = {"MAFFT": mafft_memory,
                     "MUSCLE": muscle_memory,
                     "T-Coffee": tcoffee_memory,
-                    "ClustalOmega": clustalo_memory}
+                    "ClustalOmega": clustalo_memory,
+                    "PRANK": prank_memory}
         
         times = {"MAFFT": mafft_time,
                  "MUSCLE": muscle_time,
                  "T-Coffee": tcoffee_time,
-                 "ClustalOmega": clustalo_time}
+                 "ClustalOmega": clustalo_time,
+                 "PRANK": prank_time}
         
         sp_scores = {"MAFFT": spscore.sp_score(mafft_aln),
                     "MUSCLE": spscore.sp_score(muscle_aln),
                     "T-Coffee": spscore.sp_score(tcoffee_aln),
-                    "ClustalOmega": spscore.sp_score(clustalo_aln)}
+                    "ClustalOmega": spscore.sp_score(clustalo_aln), 
+                    "PRANK": spscore.sp_score(prank_aln)}
         
         o_scores = {"MAFFT": overall_score(mafft_info, sp_scores, memories, times),
                     "MUSCLE": overall_score(muscle_info, sp_scores, memories, times),
                     "T-Coffee": overall_score(tcoffee_info, sp_scores, memories, times),
-                    "ClustalOmega": overall_score(clustalo_info, sp_scores, memories, times)}
+                    "ClustalOmega": overall_score(clustalo_info, sp_scores, memories, times),
+                    "PRANK": overall_score(prank_info, sp_scores, memories, times)}
+        
+        bar_plots = {"Memories": create_bar_plot(memories, "RAM Memory Values (MB)", "Used RAM Memories"),
+                     "Times": create_bar_plot(times, "Times of Execution (s)", "Execution Times"),
+                     "SP-Scores": create_bar_plot(sp_scores, "SP-Scores", "SP-Scores"),
+                     "Overall": create_bar_plot(o_scores, "Overall Scores", "Overall Scores")}
         
         # Obtain the best MSA software for each parameter
         # Get the MSA software(s) with the least memory used
@@ -415,15 +478,13 @@ if __name__ == "__main__":
         print(f"MSA Software(s) with the best overall score: {overall_str}")
         
         # Create a new folder to add all files generated by the MSA softwares
-        if not os.path.exists("MSA_Files"):
-            os.mkdir("MSA_Files")
+        if not os.path.exists("MSA_Info"):
+            os.mkdir("MSA_Info")
         # Move all these files to the folder
         for file in msa_files.values():
             if os.path.exists(file):
-                shutil.move(file, os.path.join("MSA_Files", os.path.basename(file)))
-        
-        print("Check out MSA_Files folder!")
-        print(str(memories.values()))
-        print(str(times.values()))
-        print(str(sp_scores.values()))
-        print(str(o_scores.values()))
+                shutil.move(file, os.path.join("MSA_Info", os.path.basename(file)))
+        # Move all bar plot files to the folder
+        for file in bar_plots.values():
+            if os.path.exists(file):
+                shutil.move(file, os.path.join("MSA_Info", os.path.basename(file)))
