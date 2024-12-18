@@ -33,7 +33,7 @@ def create_bar_plot(info_dict, ylabel, title):
         ax.text(
             bar.get_x() + bar.get_width() / 2,  # x position
             height,  # y position
-            f'{height:.2f}',  # Text to display with two decimal points
+            f'{height:.3f}',  # Text to display with two decimal points
             ha='center',  # Horizontal alignment
             va='bottom',  # Vertical alignment
             fontsize=10,  # Font size
