@@ -446,8 +446,6 @@ if __name__ == "__main__":
         clustalo_aln, clustalo_memory, clustalo_time = clustalo_info
         prank_aln, prank_memory, prank_time = prank_info
         
-        # Create a tuple containing all the info from all the sequences
-        all_info = (mafft_info, muscle_info, tcoffee_info, clustalo_info, prank_info)
         
         # Get a dictionary of each parameter value of every MSA software
         msa_files = {"MAFFT": mafft_aln,
