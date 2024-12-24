@@ -46,10 +46,10 @@ if __name__ == "__main__":
         filename = os.path.basename(sys.argv[1]).split(".")[0]
         if not os.path.exists(f"MSA_Info_{filename}"):
             os.mkdir(f"MSA_Info_{filename}")
-        # Move all these files to the folder
+        # REmove all aligned files
         for file in msa_files.values():
             if os.path.exists(file):
-                shutil.move(file, os.path.join(f"MSA_Info_{filename}", os.path.basename(file)))
+                os.remove(file)
         # Move all bar plot files to the folder
         for file in bar_plots.values():
             if os.path.exists(file):
