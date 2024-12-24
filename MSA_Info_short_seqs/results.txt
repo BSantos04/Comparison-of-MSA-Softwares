@@ -1,0 +1,6 @@
+MSA Software  SP-Score  RAM Usage      Time  Overall Score
+       MAFFT    103165      900.0  1.053935       6.998032
+      MUSCLE    103246      920.0  5.618632       6.165839
+    T-Coffee    103207      940.0 37.895517       5.984311
+ClustalOmega    103034      900.0  3.288512       6.315339
+       PRANK    102529      916.0  3.414257       6.273797
