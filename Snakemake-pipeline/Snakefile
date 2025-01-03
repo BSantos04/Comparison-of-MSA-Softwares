@@ -1,0 +1,50 @@
+import numpy as np
+
+# Define datasets and repetitions
+DATASETS = ["dataset1.fasta", "dataset2.fasta", "dataset3.fasta"]
+REPEATS = range(1, 6)
+
+rule all:
+    input:
+        expand("results/{dataset}/final_means.json", dataset=DATASETS),
+        expand("results/{dataset}/barplots.png", dataset=DATASETS)
+
+rule run_pipeline:
+    input:
+        fasta="data/{dataset}"
+    output:
+        json="results/{dataset}/run_{repeat}.json"
+    params:
+        matrix="BLOSUM62"
+    shell:
+        """
+        python main.py {input.fasta} {params.matrix} > {output.json}
+        """
+
+rule calculate_means:
+    input:
+        jsons=expand("results/{{dataset}}/run_{repeat}.json", repeat=REPEATS)
+    output:
+        "results/{dataset}/final_means.json"
+    run:
+        import json
+        means = {"memory": [], "time": [], "sp_score": []}
+        for file in input.jsons:
+            with open(file) as f:
+                data = json.load(f)
+                means["memory"].append(data["memory"])
+                means["time"].append(data["time"])
+                means["sp_score"].append(data["sp_score"])
+        means = {k: np.mean(v) for k, v in means.items()}
+        with open(output[0], "w") as f:
+            json.dump(means, f, indent=4)
+
+rule create_barplots:
+    input:
+        json="results/{dataset}/final_means.json"
+    output:
+        "results/{dataset}/barplots.png"
+    shell:
+        """
+        python create_bar_plot.py {input.json} {output}
+        """
