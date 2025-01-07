@@ -21,8 +21,8 @@ def parse_arguments():
     parser.add_argument(
         "-matrix",
         default="BLOSUM62",
-        choices=["BLOSUM62", "PAM250"],
-        help="Scoring matrix to use (default: BLOSUM62). Choices: BLOSUM62, PAM250.",
+        choices=["BLOSUM62"],
+        help="Scoring matrix to use (default: BLOSUM62). Choices: BLOSUM62.",
         metavar="SCORING_MATRIX",
     )
 
