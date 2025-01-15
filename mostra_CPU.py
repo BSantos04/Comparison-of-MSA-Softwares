@@ -10,7 +10,8 @@ def mede_CPU_utilizado(comando):
     # criação das variaveis
     em_utilização = 0
     em_utilização_t = 0
-    # enquanto o comado incerido tiver a correr vai verificar a cpu a ser utiliza e sendo atribuido o maior a em_utilização_t entre em_utilização e em_utilização_t se e a vairiavel em_utilização_t vai ficar com o maior valor e quando o processo o ciclo para
+    # enquanto o comado incerido tiver a correr vai verificar a cpu a ser utiliza e sendo atribuido o maior a em_utilização_t,
+    # entre em_utilização e em_utilização_t se e a vairiavel em_utilização_t vai ficar com o maior valor e quando o processo o ciclo para
     try:
         while processo.poll() is None:
             em_utilização = psutil.cpu_percent()
