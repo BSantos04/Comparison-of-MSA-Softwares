@@ -10,9 +10,9 @@ def mede_CPU_utilizado(comando):
 
     try:
         while processo.poll() is None:
-        em_utilização = psutil.cpu_percent(interval=1)
-        em_utilização = max(em_utilização, em_utilização_t)
-        em_utilização_t = em_utilização
+            em_utilização = psutil.cpu_percent()
+            em_utilização = max(em_utilização, em_utilização_t)
+            em_utilização_t = em_utilização
 
     except Exception as erro_utilização:
         print(f"Erro ao determinar a CPU utilizada: {erro_utilização}")
