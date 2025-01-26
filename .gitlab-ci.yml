@@ -1,5 +1,5 @@
 default:
-  image: stargazernex/lbproject:v3
+  image: stargazernex/lbproject:v4
 
 variables:
   LINT_OUTPUT: "lint_results.json"
@@ -50,4 +50,5 @@ analyze:
 test:
   stage: test
   script:
-    - python manage.py test || echo "No tests defined yet."
+    - cd md_sep_script_2
+    - python3 main.py datasets/very_short_seqs.fasta scoring_matrices/BLOSUM62
