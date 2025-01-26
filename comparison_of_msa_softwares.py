@@ -165,32 +165,7 @@ class msa_softwares:
         aligned_file = os.path.join(pwd, f"{filename}_clustalo_aln.fasta")
         
         return aligned_file, memory_used, exec_time, cpu_used
-    
-    def prank(self, input_file):
-        """
-        Runs the PRANK alignment command on the input file and returns the aligned file along with memory and execution time.
-        
-        Parameters:
-            input_file: Input FASTA file that contains the sequences to be aligned.
-        
-        Returns:
-            aligned_file: Path to the file aligned by the command line.
-            memory_used: Memory used during the execution of PRANK.
-            exec_time: Time taken for the execution of PRANK.
-        """
-        # Get the first name of the file based on the input file name
-        filename = input_file.split(".")[0]
-        # Define the command line to run the software PRANK
-        command = f"prank -d={input_file} -o={filename}_prank_aln"
-                
-        # Get execution time, used memory and CPU usage for that software
-        memory_used, exec_time, cpu_used = self.track_usage(command)
-                
-        # Get the directory which the output file will be written
-        pwd = os.getcwd()
-        aligned_file = os.path.join(pwd, f"{filename}_prank_aln.best.fas")
-        
-        return aligned_file, memory_used, exec_time, cpu_used
+
     
 class SPScore:
     def __init__(self, matrix_file):
@@ -459,7 +434,7 @@ def create_table(sp_scores, memories, times, cpus, o_scores):
     
     # Create a dictionary containing the data that will be used to create the table
     d = {
-         "MSA Software": ["MAFFT", "MUSCLE", "T-Coffee", "ClustalOmega", "PRANK"],
+         "MSA Software": ["MAFFT", "MUSCLE", "T-Coffee", "ClustalOmega"],
          "SP-Score": sp_list,
          "RAM Usage": memories_list,
          "Time": times_list,
@@ -488,52 +463,44 @@ if __name__ == "__main__":
         muscle_info = msa.muscle(sys.argv[1])
         tcoffee_info = msa.tcoffee(sys.argv[1])
         clustalo_info = msa.clustalomega(sys.argv[1])
-        prank_info = msa.prank(sys.argv[1])
         
         # Get all returned objects from each alignment (aligned file, used memory, execution time and cpu usage)
         mafft_aln, mafft_memory, mafft_time, mafft_cpu = mafft_info
         muscle_aln, muscle_memory, muscle_time, muscle_cpu = muscle_info
         tcoffee_aln, tcoffee_memory, tcoffee_time, tcoffee_cpu = tcoffee_info
         clustalo_aln, clustalo_memory, clustalo_time, clustalo_cpu = clustalo_info
-        prank_aln, prank_memory, prank_time, prank_cpu = prank_info
         
         
         # Get a dictionary of each parameter value of every MSA software
         msa_files = {"MAFFT": mafft_aln,
                     "MUSCLE": muscle_aln,
                     "T-Coffee": tcoffee_aln,
-                    "ClustalOmega": clustalo_aln,
-                    "PRANK": prank_aln}
+                    "ClustalOmega": clustalo_aln}
         
         memories = {"MAFFT": mafft_memory,
                     "MUSCLE": muscle_memory,
                     "T-Coffee": tcoffee_memory,
-                    "ClustalOmega": clustalo_memory,
-                    "PRANK": prank_memory}
+                    "ClustalOmega": clustalo_memory}
         
         times = {"MAFFT": mafft_time,
                  "MUSCLE": muscle_time,
                  "T-Coffee": tcoffee_time,
-                 "ClustalOmega": clustalo_time,
-                 "PRANK": prank_time}
+                 "ClustalOmega": clustalo_time}
         
         cpus = {"MAFFT": mafft_cpu,
                  "MUSCLE": muscle_cpu,
                  "T-Coffee": tcoffee_cpu,
-                 "ClustalOmega": clustalo_cpu,
-                 "PRANK": prank_cpu}
+                 "ClustalOmega": clustalo_cpu}
         
         sp_scores = {"MAFFT": spscore.sp_score(mafft_aln),
                     "MUSCLE": spscore.sp_score(muscle_aln),
                     "T-Coffee": spscore.sp_score(tcoffee_aln),
-                    "ClustalOmega": spscore.sp_score(clustalo_aln), 
-                    "PRANK": spscore.sp_score(prank_aln)}
+                    "ClustalOmega": spscore.sp_score(clustalo_aln)}
         
         o_scores = {"MAFFT": overall_score(mafft_info, sp_scores, memories, times, cpus),
                     "MUSCLE": overall_score(muscle_info, sp_scores, memories, times, cpus),
                     "T-Coffee": overall_score(tcoffee_info, sp_scores, memories, times, cpus),
-                    "ClustalOmega": overall_score(clustalo_info, sp_scores, memories, times, cpus),
-                    "PRANK": overall_score(prank_info, sp_scores, memories, times, cpus)}
+                    "ClustalOmega": overall_score(clustalo_info, sp_scores, memories, times, cpus)}
         
         bar_plots = {"Memories": create_bar_plot(memories, "RAM Memory Value (MB)", "RAM Usage"),
                      "Times": create_bar_plot(times, "Time of Execution (s)", "Execution Times"),
