@@ -25,3 +25,6 @@ def mede_CPU_utilizado(comando):
 
     # vai retornar o valor
     return  em_utilização
+
+if __name__=="__main__":
+    print(mede_CPU_utilizado(sys.argv[1]))

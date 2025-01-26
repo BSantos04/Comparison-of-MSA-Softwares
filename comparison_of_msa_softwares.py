@@ -11,50 +11,56 @@ import pandas as pd
 class msa_softwares:
     def __init__(self):
         pass
-    
-    def get_memory_and_time(self, command):
+
+    def track_usage(self, command):
         """
         Summary:
-            This function gets the execution time and used memory of a process run by a command line.
-            
+            This function tracks the execution time, peak memory usage, and peak CPU usage of the alignment run by a command line.
+        
         Parameters:
-            command: Input command line that will be parsed.
-            
+            command: Input command line that will be executed.
+        
         Returns:
-            used_memory: Memory that was used during the process run by the command line.
-            exec_time: Time of execution of the process run by the command line.
-
+            peak_memory: Peak memory usage (in KB) during the process run.
+            exec_time: Total execution time (in seconds) of the process.
+            peak_cpu_usage: Peak CPU usage (as a percentage) during the process.
         """
-        # Get starting time of the process
+        # Get the starting time and baseline CPU usage
         start_time = time.time()
-        
-        # Start the process 
+        baseline_cpu = psutil.cpu_percent(interval=None)
+
+        # Start the process
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        # Monitor the memory usage 
+
+        # Initialize tracking variables
         peak_memory = 0
+        peak_cpu_usage = baseline_cpu
+
         try:
             # While the process is still running...
             while process.poll() is None:
                 # Get the process object
                 proc = psutil.Process(process.pid)
-                # Track the memory that is being used in KB
-                mem_usage = proc.memory_info().rss / 1024
-                # Get the peak memory ever registered during the process
-                peak_memory = max(peak_memory, mem_usage)
-                # In order to avoid high CPU while polling, we gve a short period of rest
-                time.sleep(0.1)
-        except Exception as e:
-            print(f"An error has occurred: {e}")
-        
-        # Ensure that the process has finished and get the output
-        process.communicate()
-        # Get the execution time (difference between finish time and start time)
-        exec_time = time.time() - start_time
-        # Define used memory as peak memory registered
-        memory_used = peak_memory
 
-        return memory_used, exec_time
+                # Track the memory usage (in KB)
+                mem_usage = proc.memory_info().rss / 1024
+                peak_memory = max(peak_memory, mem_usage)
+
+                # Track the CPU usage (percentage)
+                cpu_usage = psutil.cpu_percent(interval=0.1)
+                peak_cpu_usage = max(peak_cpu_usage, cpu_usage)
+
+        except Exception as e:
+            print(f"An error occurred while monitoring resources: {e}")
+
+        # Ensure that the process has finished
+        process.communicate()
+
+        # Calculate the total execution time
+        exec_time = time.time() - start_time
+
+        # Return the tracked metrics
+        return peak_memory, exec_time, peak_cpu_usage
     
     def mafft(self, input_file):
         """
@@ -73,14 +79,14 @@ class msa_softwares:
         # Define the command line to run the software MAFFT
         command = f"mafft {input_file} > {filename}_mafft_aln.fasta"
         
-        # Get execution time and used memory for that software
-        memory_used, exec_time = self.get_memory_and_time(command)
+        # Get execution time, used memory and CPU usage for that software
+        memory_used, exec_time, cpu_used = self.track_usage(command)
         
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_mafft_aln.fasta")
         
-        return aligned_file, memory_used, exec_time
+        return aligned_file, memory_used, exec_time, cpu_used
     
     def muscle(self, input_file):
         """
@@ -99,14 +105,14 @@ class msa_softwares:
         # Define the command line to run the software MUSCLE
         command = f"muscle -align {input_file} -output {filename}_muscle_aln.fasta"
                 
-        # Get execution time and used memory for that software
-        memory_used, exec_time = self.get_memory_and_time(command)
+        # Get execution time, used memory and CPU usage for that software
+        memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_muscle_aln.fasta")
         
-        return aligned_file, memory_used, exec_time
+        return aligned_file, memory_used, exec_time, cpu_used
     
     def tcoffee(self, input_file):
         """
@@ -125,14 +131,14 @@ class msa_softwares:
         # Define the command line to run the software T-Coffee
         command = f"t_coffee -in {input_file} -output fasta_aln -outfile {filename}_tcoffee_aln.fasta"
                 
-        # Get execution time and used memory for that software
-        memory_used, exec_time = self.get_memory_and_time(command)
+        # Get execution time, used memory and CPU usage for that software
+        memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_tcoffee_aln.fasta")
         
-        return aligned_file, memory_used, exec_time
+        return aligned_file, memory_used, exec_time, cpu_used
     
     def clustalomega(self, input_file):
         """
@@ -151,14 +157,14 @@ class msa_softwares:
         # Define the command line to run the software ClustalOmega
         command = f"clustalo -i {input_file} -o {filename}_clustalo_aln.fasta --outfmt fasta"
                 
-        # Get execution time and used memory for that software
-        memory_used, exec_time = self.get_memory_and_time(command)
+        # Get execution time, used memory and CPU usage for that software
+        memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_clustalo_aln.fasta")
         
-        return aligned_file, memory_used, exec_time
+        return aligned_file, memory_used, exec_time, cpu_used
     
     def prank(self, input_file):
         """
@@ -177,14 +183,14 @@ class msa_softwares:
         # Define the command line to run the software PRANK
         command = f"prank -d={input_file} -o={filename}_prank_aln"
                 
-        # Get execution time and used memory for that software
-        memory_used, exec_time = self.get_memory_and_time(command)
+        # Get execution time, used memory and CPU usage for that software
+        memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_prank_aln.best.fas")
         
-        return aligned_file, memory_used, exec_time
+        return aligned_file, memory_used, exec_time, cpu_used
     
 class SPScore:
     def __init__(self, matrix_file):
@@ -327,28 +333,30 @@ class SPScore:
 
         return sp_score
     
-def overall_score(ref_info, sp_dict, mem_dict, time_dict):
+def overall_score(ref_info, sp_dict, mem_dict, time_dict, cpu_dict):
     """
     Summary:
-        This function calculates the overall score for one alignment based on the SP-Score, memory and execution time values obtain.
+        This function calculates the overall score for one alignment based on the SP-Score, memory, execution time and cpu usage values obtained.
     
     Parameters:
         ref_info: Information of the aligned that is going to be analyzed and we are calculating the overall score.
         sp_dict: A dictionary containing the values of all SP-Scores of all alignments.
         mem_dict: A dictionary containing the values of all used memories of all alignments.
         time_dict: A dictionary containing the values of all execution times of all alignments.
+        cpu_dict: A dictionary containing the values of all CPU usage of all alignments.
     
     Returns:
         score: Overall score for the reference alignment.
 
     """
     # Get the aligned file path, used memory and execution time of the reference alignment
-    aln, memory, exectime = ref_info
+    aln, memory, exectime, cpu = ref_info
     
-    # Create list for every values of SP-Scores, used memories and execution times
+    # Create list for every values of SP-Scores, used memories, execution times and cpu usage
     sp_scores = list(sp_dict.values())
     mems = list(mem_dict.values())
     times = list(time_dict.values())
+    cpus = list(cpu_dict.values())
     
     # Get the SP-Score for the reference alignment
     aln_spscore = spscore.sp_score(aln)
@@ -368,8 +376,11 @@ def overall_score(ref_info, sp_dict, mem_dict, time_dict):
     # Normalize the execution time value in order to corresponf to our overall score
     normalized_time = ((1/exectime))/(1/min(times))
     
+    # Normalize the cpu value in order to corresponf to our overall score
+    normalized_cpu = ((1/cpu))/(1/min(cpus))
+    
     # Calculate the score for the reference alignment
-    score = normalized_spscore + normalized_memory + normalized_time
+    score = normalized_spscore + normalized_memory + normalized_time + normalized_cpu
     
     return score
 
@@ -423,7 +434,7 @@ def create_bar_plot(info_dict, ylabel, title):
     
     return plot_file_path  
     
-def create_table(sp_scores, memories, times, o_scores):
+def create_table(sp_scores, memories, times, cpus, o_scores):
     """
     Summary: 
         Creates a table with every MSA software and their respective scores for every parameter.
@@ -432,6 +443,7 @@ def create_table(sp_scores, memories, times, o_scores):
         sp_scores: Dictionary containing the SP-Scores of every MSA software.
         memories: Dictionary containing the RAM usage of every MSA software.
         times: Dictionary containing the execution time of every MSA software.
+        cpus: Dictionary containing the CPU usage of every MSA software.
         o_scores: Dictionary containing the overall scores of every MSA software.
 
     Returns:
@@ -442,6 +454,7 @@ def create_table(sp_scores, memories, times, o_scores):
     sp_list = list(sp_scores.values())
     memories_list = list(memories.values())
     times_list = list(times.values())
+    cpu_list = list(cpus.values())
     o_list = list(o_scores.values())
     
     # Create a dictionary containing the data that will be used to create the table
@@ -450,6 +463,7 @@ def create_table(sp_scores, memories, times, o_scores):
          "SP-Score": sp_list,
          "RAM Usage": memories_list,
          "Time": times_list,
+         "CPU Usage": cpu_list, 
          "Overall Score": o_list}
     
     # Convert the data into a dataframe
@@ -476,12 +490,12 @@ if __name__ == "__main__":
         clustalo_info = msa.clustalomega(sys.argv[1])
         prank_info = msa.prank(sys.argv[1])
         
-        # Get all returned objects from each alignment (aligned file, used memory and execution time)
-        mafft_aln, mafft_memory, mafft_time = mafft_info
-        muscle_aln, muscle_memory, muscle_time = muscle_info
-        tcoffee_aln, tcoffee_memory, tcoffee_time = tcoffee_info
-        clustalo_aln, clustalo_memory, clustalo_time = clustalo_info
-        prank_aln, prank_memory, prank_time = prank_info
+        # Get all returned objects from each alignment (aligned file, used memory, execution time and cpu usage)
+        mafft_aln, mafft_memory, mafft_time, mafft_cpu = mafft_info
+        muscle_aln, muscle_memory, muscle_time, muscle_cpu = muscle_info
+        tcoffee_aln, tcoffee_memory, tcoffee_time, tcoffee_cpu = tcoffee_info
+        clustalo_aln, clustalo_memory, clustalo_time, clustalo_cpu = clustalo_info
+        prank_aln, prank_memory, prank_time, prank_cpu = prank_info
         
         
         # Get a dictionary of each parameter value of every MSA software
@@ -503,22 +517,29 @@ if __name__ == "__main__":
                  "ClustalOmega": clustalo_time,
                  "PRANK": prank_time}
         
+        cpus = {"MAFFT": mafft_cpu,
+                 "MUSCLE": muscle_cpu,
+                 "T-Coffee": tcoffee_cpu,
+                 "ClustalOmega": clustalo_cpu,
+                 "PRANK": prank_cpu}
+        
         sp_scores = {"MAFFT": spscore.sp_score(mafft_aln),
                     "MUSCLE": spscore.sp_score(muscle_aln),
                     "T-Coffee": spscore.sp_score(tcoffee_aln),
                     "ClustalOmega": spscore.sp_score(clustalo_aln), 
                     "PRANK": spscore.sp_score(prank_aln)}
         
-        o_scores = {"MAFFT": overall_score(mafft_info, sp_scores, memories, times),
-                    "MUSCLE": overall_score(muscle_info, sp_scores, memories, times),
-                    "T-Coffee": overall_score(tcoffee_info, sp_scores, memories, times),
-                    "ClustalOmega": overall_score(clustalo_info, sp_scores, memories, times),
-                    "PRANK": overall_score(prank_info, sp_scores, memories, times)}
+        o_scores = {"MAFFT": overall_score(mafft_info, sp_scores, memories, times, cpus),
+                    "MUSCLE": overall_score(muscle_info, sp_scores, memories, times, cpus),
+                    "T-Coffee": overall_score(tcoffee_info, sp_scores, memories, times, cpus),
+                    "ClustalOmega": overall_score(clustalo_info, sp_scores, memories, times, cpus),
+                    "PRANK": overall_score(prank_info, sp_scores, memories, times, cpus)}
         
-        bar_plots = {"Memories": create_bar_plot(memories, "RAM Memory Values (MB)", "Used RAM Memories"),
-                     "Times": create_bar_plot(times, "Times of Execution (s)", "Execution Times"),
-                     "SP-Scores": create_bar_plot(sp_scores, "SP-Scores", "SP-Scores"),
-                     "Overall": create_bar_plot(o_scores, "Overall Scores", "Overall Scores")}
+        bar_plots = {"Memories": create_bar_plot(memories, "RAM Memory Value (MB)", "RAM Usage"),
+                     "Times": create_bar_plot(times, "Time of Execution (s)", "Execution Times"),
+                     "SP-Scores": create_bar_plot(sp_scores, "SP-Score", "SP-Scores"),
+                     "CPU": create_bar_plot(cpus, "Total CPU Usage (%)", "CPU Usage"),
+                     "Overall": create_bar_plot(o_scores, "Overall Score", "Overall Scores")}
         
         # Obtain the best MSA software for each parameter
         # Get the MSA software(s) with the least memory used
@@ -527,6 +548,9 @@ if __name__ == "__main__":
         # Get the MSA software(s) with the shortest execution time(s)
         tim = [t for t in times if all(times[v] >= times[t] for v in times)]
         time_str = ", ".join(tim)
+        # Get the MSA software(s) with the least cpu usage
+        cpu = [c for c in cpus if all(cpus[v] >= cpus[c] for v in cpus)]
+        cpu_str = ", ".join(cpu)
         # Get the MSA software(s) with the highest SP-Score(s) 
         sp = [s for s in sp_scores if all(sp_scores[v] <= sp_scores[s] for v in sp_scores)]
         sp_str = ", ".join(sp)
@@ -558,9 +582,10 @@ if __name__ == "__main__":
         with open(f"MSA_Info_{filename}.log", "w") as file:
             file.write(f"\nMSA Software with the least RAM usage: {mem_str}\n\n")
             file.write(f"Fastest MSA Software(s): {time_str}\n\n")
+            file.write(f"MSA Software with the least CPU usage: {cpu_str}\n\n")
             file.write(f"MSA Software(s) with the best alignments: {sp_str}\n\n")
             file.write(f"MSA Software(s) with the best overall score: {overall_str}\n\n\n")
-            file.write(create_table(sp_scores, memories, times, o_scores))
+            file.write(create_table(sp_scores, memories, times, cpus, o_scores))
         # Move the results file to the "MSA_Info" folder
         file_path = os.path.join(new_folder, f"MSA_Info_{filename}.log")
         if os.path.exists(f"MSA_Info_{filename}.log"):
