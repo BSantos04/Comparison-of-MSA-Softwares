@@ -1,0 +1,14 @@
+
+MSA Software with the least RAM usage: MAFFT
+
+Fastest MSA Software(s): MAFFT
+
+MSA Software with the least CPU usage: MAFFT
+
+MSA Software(s) with the best alignments: MUSCLE
+
+MSA Software  SP-Score  RAM Usage      Time  CPU Usage  Overall Score
+       MAFFT    103165      884.0  0.667488       20.4       7.996077
+      MUSCLE    103246      908.0  4.106720      100.0       6.340104
+    T-Coffee    103207      924.0 35.509614       55.7       6.339866
+    ProbCons    103238      892.0 33.745388       37.9       6.548683
