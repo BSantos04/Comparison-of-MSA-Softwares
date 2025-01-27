@@ -523,10 +523,10 @@ if __name__ == "__main__":
         # Calculate overall score for every MSA software based on the best values of every parameter
         o_scores = {}
         for tool in all_memories.keys():
-            normalized_sp_score = (best_sp_scores[tool] * 5) / max(best_sp_scores.values())
-            normalized_memory = (1 / best_memories[tool]) / (1 / min(best_memories.values()))
-            normalized_time = (1 / best_times[tool]) / (1 / min(best_times.values()))
-            normalized_cpu = (1 / best_cpus[tool]) / (1 / min(best_cpus.values()))
+            normalized_sp_score = (math.exp(best_sp_scores[tool]) * 5) / max(math.exp(best_sp_scores.values()))
+            normalized_memory = (1 / math.exp(best_memories[tool])) / (1 / min(math.exp(best_memories.values())))
+            normalized_time = (1 / math.exp(best_times[tool])) / (1 / min(math.exp(best_times.values())))
+            normalized_cpu = (1 / math.exp(best_cpus[tool])) / (1 / min(math.exp(best_cpus.values())))
             o_scores[tool] = normalized_sp_score + normalized_memory + normalized_time + normalized_cpu
 
         # Create barplots containing the info of every MSA software
