@@ -119,30 +119,30 @@ class msa_softwares:
         print()
         return aligned_file, memory_used, exec_time, cpu_used
     
-    def kalign(self, input_file):
+    def famsa(self, input_file):
         """
-        Runs the KAlign alignment command on the input file and returns the aligned file along with memory and execution time.
+        Runs the FAMSA alignment command on the input file and returns the aligned file along with memory and execution time.
         
         Parameters:
             input_file: Input FASTA file that contains the sequences to be aligned.
         
         Returns:
             aligned_file: Path to the file aligned by the command line.
-            memory_used: Memory used during the execution of KAlign.
-            exec_time: Time taken for the execution of KAlign.
+            memory_used: Memory used during the execution of FAMSA.
+            exec_time: Time taken for the execution of FAMSA.
         """
         # Get the first name of the file based on the input file name
         filename = input_file.split(".")[0]
-        # Define the command line to run the software KAlign3
-        command = f"kalign -in {input_file} -o{filename}_kalign_aln.fasta"
-        print("Running KAlign...")        
+        # Define the command line to run the software FAMSA
+        command = f"famsa {input_file} {filename}_famsa_aln.fasta"
+        print("Running FAMSA...")        
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
-        aligned_file = os.path.join(pwd, f"{filename}_kalign_aln.fasta")
-        print("KAlign runned!!!")
+        aligned_file = os.path.join(pwd, f"{filename}_famsa_aln.fasta")
+        print("FAMSA runned!!!")
         print()
         return aligned_file, memory_used, exec_time, cpu_used
     
@@ -418,7 +418,7 @@ def create_table(sp_scores, memories, times, cpus, o_scores):
     
     # Create a dictionary containing the data that will be used to create the table
     d = {
-         "MSA Software": ["MAFFT", "MUSCLE", "KAlign3", "ClustalOmega"],
+         "MSA Software": ["MAFFT", "MUSCLE", "FAMSA", "ClustalOmega"],
          "SP-Score": sp_list,
          "RAM Usage": memories_list,
          "Time": times_list,
@@ -484,10 +484,10 @@ if __name__ == "__main__":
         msa = msa_softwares()
         
         # Create arrays to store every parameter value from the 5 attempts
-        all_memories = {"MAFFT": [], "MUSCLE": [], "KAlign3": [], "ClustalOmega": []}
-        all_times = {"MAFFT": [], "MUSCLE": [], "KAlign3": [], "ClustalOmega": []}
-        all_cpus = {"MAFFT": [], "MUSCLE": [], "KAlign3": [], "ClustalOmega": []}
-        all_sp_scores = {"MAFFT": [], "MUSCLE": [], "KAlign3": [], "ClustalOmega": []}
+        all_memories = {"MAFFT": [], "MUSCLE": [], "FAMSA": [], "ClustalOmega": []}
+        all_times = {"MAFFT": [], "MUSCLE": [], "FAMSA": [], "ClustalOmega": []}
+        all_cpus = {"MAFFT": [], "MUSCLE": [], "FAMSA": [], "ClustalOmega": []}
+        all_sp_scores = {"MAFFT": [], "MUSCLE": [], "FAMSA": [], "ClustalOmega": []}
         
         # Start running every MSA software 5 times
         for i in range(5):
@@ -497,20 +497,20 @@ if __name__ == "__main__":
 
             mafft_info = msa.mafft(sys.argv[1])
             muscle_info = msa.muscle(sys.argv[1])
-            kalign_info = msa.kalign(sys.argv[1])
+            famsa_info = msa.famsa(sys.argv[1])
             clustalo_info = msa.clustalo(sys.argv[1])
             print("Run Finished!!!")
             
             # Create a dictionary to store the path for every alignment
             msa_files = {"MAFFT": mafft_info[0],
                         "MUSCLE": muscle_info[0],
-                        "KAlign3": kalign_info[0],
+                        "FAMSA": famsa_info[0],
                         "ClustalOmega": clustalo_info[0]}
             
             # Calculate SP-Score for each software
             mafft_sp_score = spscore.sp_score(mafft_info[0])
             muscle_sp_score = spscore.sp_score(muscle_info[0])
-            kalign_sp_score = spscore.sp_score(kalign_info[0])
+            famsa_sp_score = spscore.sp_score(famsa_info[0])
             clustalo_sp_score = spscore.sp_score(clustalo_info[0])
             
             # Store all objects from every attempt for every MSA software
@@ -524,10 +524,10 @@ if __name__ == "__main__":
             all_cpus["MUSCLE"].append(muscle_info[3])
             all_sp_scores["MUSCLE"].append(muscle_sp_score)
         
-            all_memories["KAlign3"].append(kalign_info[1])
-            all_times["KAlign3"].append(kalign_info[2])
-            all_cpus["KAlign3"].append(kalign_info[3])
-            all_sp_scores["KAlign3"].append(kalign_sp_score)
+            all_memories["FAMSA"].append(famsa_info[1])
+            all_times["FAMSA"].append(famsa_info[2])
+            all_cpus["FAMSA"].append(famsa_info[3])
+            all_sp_scores["FAMSA"].append(famsa_sp_score)
         
             all_memories["ClustalOmega"].append(clustalo_info[1])
             all_times["ClustalOmega"].append(clustalo_info[2])
@@ -538,7 +538,7 @@ if __name__ == "__main__":
             print(f"\nResults for Run {i + 1}:")
             print(f"MAFFT - SP-Score: {mafft_sp_score}, Memory: {mafft_info[1]} KB, Time: {mafft_info[2]} s, CPU: {mafft_info[3]}%")
             print(f"MUSCLE - SP-Score: {muscle_sp_score}, Memory: {muscle_info[1]} KB, Time: {muscle_info[2]} s, CPU: {muscle_info[3]}%")
-            print(f"KAlign3 - SP-Score: {kalign_sp_score}, Memory: {kalign_info[1]} KB, Time: {kalign_info[2]} s, CPU: {kalign_info[3]}%")
+            print(f"FAMSA - SP-Score: {famsa_sp_score}, Memory: {famsa_info[1]} KB, Time: {famsa_info[2]} s, CPU: {famsa_info[3]}%")
             print(f"ClustalOmega - SP-Score: {clustalo_sp_score}, Memory: {clustalo_info[1]} KB, Time: {clustalo_info[2]} s, CPU: {clustalo_info[3]}%\n")
 
             # Eliminate the alignments
