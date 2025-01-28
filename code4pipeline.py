@@ -80,13 +80,14 @@ class msa_softwares:
         # Define the command line to run the software MAFFT
         command = f"mafft {input_file} > {filename}_mafft_aln.fasta"
         
+        print("Running MAFFT...")
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
         
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_mafft_aln.fasta")
-        
+        print("MAFFT runned!!!")
         return aligned_file, memory_used, exec_time, cpu_used
     
     def muscle(self, input_file):
@@ -105,14 +106,15 @@ class msa_softwares:
         filename = input_file.split(".")[0]
         # Define the command line to run the software MUSCLE
         command = f"muscle -align {input_file} -output {filename}_muscle_aln.fasta"
-                
+        
+        print("Running MUSCLE...")
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_muscle_aln.fasta")
-        
+        print("MUSCLE runned!!!")
         return aligned_file, memory_used, exec_time, cpu_used
     
     def tcoffee(self, input_file):
@@ -131,40 +133,40 @@ class msa_softwares:
         filename = input_file.split(".")[0]
         # Define the command line to run the software T-Coffee
         command = f"t_coffee -in {input_file} -output fasta_aln -outfile {filename}_tcoffee_aln.fasta"
-                
+        print("Running T-Coffee...")        
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_tcoffee_aln.fasta")
-        
+        print("T-Coffee runned!!!")
         return aligned_file, memory_used, exec_time, cpu_used
     
-    def probcons(self, input_file):
+    def prank(self, input_file):
         """
-        Runs the ProbCons alignment command on the input file and returns the aligned file along with memory and execution time.
+        Runs the PRANK alignment command on the input file and returns the aligned file along with memory and execution time.
         
         Parameters:
             input_file: Input FASTA file that contains the sequences to be aligned.
         
         Returns:
             aligned_file: Path to the file aligned by the command line.
-            memory_used: Memory used during the execution of ProbCons.
-            exec_time: Time taken for the execution of CProbCons.
+            memory_used: Memory used during the execution of PRANK.
+            exec_time: Time taken for the execution of PRANK.
         """
         # Get the first name of the file based on the input file name
         filename = input_file.split(".")[0]
-        # Define the command line to run the software ProbCons
-        command = f"probcons {input_file} > {filename}_probcons_aln.fasta"
-                
+        # Define the command line to run the software PRANK
+        command = f"prank -d={input_file} -o={filename}_prank_aln"
+        print("Running PRANK...")        
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
                 
         # Get the directory which the output file will be written
         pwd = os.getcwd()
-        aligned_file = os.path.join(pwd, f"{filename}_probcons_aln.fasta")
-        
+        aligned_file = os.path.join(pwd, f"{filename}_prank_aln.best.fas")
+        print("PRANK runned!!!")
         return aligned_file, memory_used, exec_time, cpu_used
 
     
@@ -385,7 +387,7 @@ def create_table(sp_scores, memories, times, cpus, o_scores):
     
     # Create a dictionary containing the data that will be used to create the table
     d = {
-         "MSA Software": ["MAFFT", "MUSCLE", "T-Coffee", "ProbCons"],
+         "MSA Software": ["MAFFT", "MUSCLE", "T-Coffee", "PRANK"],
          "SP-Score": sp_list,
          "RAM Usage": memories_list,
          "Time": times_list,
@@ -451,32 +453,34 @@ if __name__ == "__main__":
         msa = msa_softwares()
         
         # Create arrays to store every parameter value from the 5 attempts
-        all_memories = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "ProbCons": []}
-        all_times = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "ProbCons": []}
-        all_cpus = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "ProbCons": []}
-        all_sp_scores = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "ProbCons": []}
+        all_memories = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "PRANK": []}
+        all_times = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "PRANK": []}
+        all_cpus = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "PRANK": []}
+        all_sp_scores = {"MAFFT": [], "MUSCLE": [], "T-Coffee": [], "PRANK": []}
         
         # Start running every MSA software 5 times
         for i in range(5):
             print(f"Run {i + 1}...")
             
             # Get info from all MSA softwares
+
             mafft_info = msa.mafft(sys.argv[1])
             muscle_info = msa.muscle(sys.argv[1])
             tcoffee_info = msa.tcoffee(sys.argv[1])
-            probcons_info = msa.probcons(sys.argv[1])
+            prank_info = msa.prank(sys.argv[1])
+            print("Run Finished!!!")
             
             # Create a dictionary to store the path for every alignment
             msa_files = {"MAFFT": mafft_info[0],
                         "MUSCLE": muscle_info[0],
                         "T-Coffee": tcoffee_info[0],
-                        "ProbCons": probcons_info[0]}
+                        "PRANK": prank_info[0]}
             
             # Calculate SP-Score for each software
             mafft_sp_score = spscore.sp_score(mafft_info[0])
             muscle_sp_score = spscore.sp_score(muscle_info[0])
             tcoffee_sp_score = spscore.sp_score(tcoffee_info[0])
-            clustalo_sp_score = spscore.sp_score(probcons_info[0])
+            prank_sp_score = spscore.sp_score(prank_info[0])
             
             # Store all objects from every attempt for every MSA software
             all_memories["MAFFT"].append(mafft_info[1])
@@ -494,17 +498,17 @@ if __name__ == "__main__":
             all_cpus["T-Coffee"].append(tcoffee_info[3])
             all_sp_scores["T-Coffee"].append(tcoffee_sp_score)
         
-            all_memories["ProbCons"].append(probcons_info[1])
-            all_times["ProbCons"].append(probcons_info[2])
-            all_cpus["ProbCons"].append(probcons_info[3])
-            all_sp_scores["ProbCons"].append(clustalo_sp_score)
+            all_memories["PRANK"].append(prank_info[1])
+            all_times["PRANK"].append(prank_info[2])
+            all_cpus["PRANK"].append(prank_info[3])
+            all_sp_scores["PRANK"].append(prank_sp_score)
             
             # Print the results for this run
             print(f"\nResults for Run {i + 1}:")
             print(f"MAFFT - SP-Score: {mafft_sp_score}, Memory: {mafft_info[1]} KB, Time: {mafft_info[2]} s, CPU: {mafft_info[3]}%")
             print(f"MUSCLE - SP-Score: {muscle_sp_score}, Memory: {muscle_info[1]} KB, Time: {muscle_info[2]} s, CPU: {muscle_info[3]}%")
             print(f"T-Coffee - SP-Score: {tcoffee_sp_score}, Memory: {tcoffee_info[1]} KB, Time: {tcoffee_info[2]} s, CPU: {tcoffee_info[3]}%")
-            print(f"ProbCons - SP-Score: {clustalo_sp_score}, Memory: {probcons_info[1]} KB, Time: {probcons_info[2]} s, CPU: {probcons_info[3]}%\n")
+            print(f"PRANK - SP-Score: {prank_sp_score}, Memory: {prank_info[1]} KB, Time: {prank_info[2]} s, CPU: {prank_info[3]}%\n")
 
         
         # Create dictionaries to store the best value of each parameter for every MSA software based on the t-test
