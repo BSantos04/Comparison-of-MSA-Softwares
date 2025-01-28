@@ -418,7 +418,7 @@ def create_table(sp_scores, memories, times, cpus, o_scores):
     
     # Create a dictionary containing the data that will be used to create the table
     d = {
-         "MSA Software": ["MAFFT", "MUSCLE", "KAlign3", "PRANK"],
+         "MSA Software": ["MAFFT", "MUSCLE", "KAlign3", "ClustalOmega"],
          "SP-Score": sp_list,
          "RAM Usage": memories_list,
          "Time": times_list,
