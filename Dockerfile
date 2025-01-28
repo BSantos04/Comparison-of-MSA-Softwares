@@ -3,6 +3,7 @@ FROM snakemake/snakemake:v7.32.4
 
 # Install alignment requirements via conda
 RUN mamba install mafft=7.520 -c bioconda
+RUN mamba install conda-forge::biopython
 RUN mamba install -y -c bioconda -c conda-forge clustalo=1.2.4
 RUN mamba install -y -c bioconda -c conda-forge muscle=5.1
 RUN mamba install -y -c bioconda -c conda-forge t-coffee=11.0.8
