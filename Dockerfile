@@ -9,9 +9,7 @@ RUN mamba install -y -c bioconda -c conda-forge kalign2=2.04
 
 # Install Others Requirements
 RUN mamba install -y -c bioconda -c conda-forge psutil=5.9.0
-RUN mamba install conda-forge::biopython
-RUN mamba install -y -c conda-forge pandas=2.1.2
-RUN mamba install -y -c conda-forge matplotlib=3.6.0
+RUN pip install biopython matplotlib pandas
 
 
 WORKDIR /App

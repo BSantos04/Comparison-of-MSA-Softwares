@@ -1,0 +1,26 @@
+host: ynot
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job                   count
+------------------  -------
+build_docker_image        1
+total                     1
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Jan 29 14:41:05 2025]
+localrule build_docker_image:
+    input: Dockerfile
+    output: image_built.flag
+    jobid: 0
+    reason: Forced execution
+    resources: tmpdir=/tmp
+
+[Wed Jan 29 14:41:06 2025]
+Finished job 0.
+1 of 1 steps (100%) done
+Complete log: .snakemake/log/2025-01-29T144105.143669.snakemake.log

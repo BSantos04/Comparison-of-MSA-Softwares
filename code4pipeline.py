@@ -31,7 +31,7 @@ class msa_softwares:
         baseline_cpu = psutil.cpu_percent(interval=None)
 
         # Start the process
-        process = subprocess.Popen(command, shell=True)
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Initialize tracking variables
         peak_memory = 0
@@ -311,7 +311,46 @@ class SPScore:
                 sp_score += self.pairwise_score(seq1, seq2)
 
         return sp_score
+
+def normalized_score(value, info_dict, choice=None):
+    """
+    Summary:
+        Normalizes a given value based on a dictionary of values.
+        - For SP-Score (higher is better), we scale to [0,5].
+        - For RAM, Time, and CPU (lower is better), we scale to [0,1].
+
+    Parameters:
+        value: The value to be normalized.
+        info_dict: Dictionary containing all values for this specific parameter.
+        choice: If None, SP-Score normalization is used (higher is better).
+                Otherwise, inverse normalization is applied (lower is better).
+
+    Returns:
+        normalized_score: The normalized value.
+    """
     
+    scores = list(info_dict.values())
+    
+    if choice is None:
+        # Normalize SP-Score (higher is better) → range [0,5]
+        min_spscore = min(scores)
+        max_spscore = max(scores)
+        if max_spscore != min_spscore:  
+            normalized_score = 5 * (value - min_spscore) / (max_spscore - min_spscore)
+        else:
+            normalized_score = 5  # If all SP-Scores are the same
+    
+    else:
+        # Normalize RAM, Time, and CPU (lower is better) → range [0,1]
+        epsilon = 1e-10  
+        min_score = min(scores) + epsilon
+        max_score = max(scores) + epsilon
+        value += epsilon
+
+        normalized_score = 1 - (value - min_score) / (max_score - min_score)
+    
+    return normalized_score
+   
 
 def create_bar_plot(info_dict, ylabel, title):
     """
@@ -536,20 +575,23 @@ if __name__ == "__main__":
         best_sp_scores = {}
         
         # Obtain the best values of each parameter based on the t-test and store in his respective dictionary
-        for tool in all_memories.keys():
-            best_memories[tool] = t_test(all_memories[tool])
-            best_times[tool] = t_test(all_times[tool])
-            best_cpus[tool] = t_test(all_cpus[tool])
-            best_sp_scores[tool] = t_test(all_sp_scores[tool])
+        for i in all_memories.keys():
+            best_memories[i] = t_test(all_memories[i])
+            best_times[i] = t_test(all_times[i])
+            best_cpus[i] = t_test(all_cpus[i])
+            best_sp_scores[i] = t_test(all_sp_scores[i])
 
         # Calculate overall score for every MSA software based on the best values of every parameter
         o_scores = {}
-        for tool in all_memories.keys():
-            normalized_sp_score = (best_sp_scores[tool] * 5) / max(best_sp_scores.values())
-            normalized_memory = (1 / best_memories[tool]) / (1 / min(best_memories.values()))
-            normalized_time = (1 / best_times[tool]) / (1 / min(best_times.values()))
-            normalized_cpu = (1 / best_cpus[tool]) / (1 / min(best_cpus.values()))
-            o_scores[tool] = normalized_sp_score + normalized_memory + normalized_time + normalized_cpu
+        for j in best_memories.keys():
+            normalized_sp_score = normalized_score(best_sp_scores[j], best_sp_scores)  
+            normalized_memory = normalized_score(best_memories[j], best_memories, 1)  
+            normalized_time = normalized_score(best_times[j], best_times, 1)  
+            normalized_cpu = normalized_score(best_cpus[j], best_cpus, 1)  
+            
+            # Sum of all normalized values, max possible score is 8
+            o_scores[j] = normalized_sp_score + normalized_memory + normalized_time + normalized_cpu
+
 
         # Create barplots containing the info of every MSA software
         bar_plots = {"Memories": create_bar_plot(best_memories, "RAM Memory Value (KB)", "RAM Usage"),
