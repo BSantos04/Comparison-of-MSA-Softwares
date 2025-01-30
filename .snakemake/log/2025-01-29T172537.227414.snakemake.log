@@ -1,6 +1,0 @@
-host: ynot
-Building DAG of jobs...
-MissingInputException in rule all in file /home/ynot/comparison_of_msa_softwares/snakefile, line 1:
-Missing input files for rule all:
-    affected files:
-        MSA_Info_{dataset|basename}

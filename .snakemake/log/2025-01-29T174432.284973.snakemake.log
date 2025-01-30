@@ -1,5 +1,0 @@
-host: ynot
-Building DAG of jobs...
-WildcardError in rule all in file /home/ynot/comparison_of_msa_softwares/Snakefile, line 5:
-Wildcards in input files cannot be determined from output files: (rule all, line 5, /home/ynot/comparison_of_msa_softwares/Snakefile)
-'dataset'
