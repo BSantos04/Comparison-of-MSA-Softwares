@@ -1,0 +1,42 @@
+host: ynot
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job             count
+------------  -------
+all                 1
+run_analysis        1
+total               2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Jan 29 16:39:15 2025]
+localrule run_analysis:
+    input: datasets/sample.fasta, scoring_matrices/BLOSUM62
+    output: results/MSA_Info
+    jobid: 1
+    reason: Missing output files: results/MSA_Info; Code has changed since last execution
+    resources: tmpdir=/tmp
+
+[Wed Jan 29 16:39:17 2025]
+Error in rule run_analysis:
+    jobid: 1
+    input: datasets/sample.fasta, scoring_matrices/BLOSUM62
+    output: results/MSA_Info
+    shell:
+        
+        echo "Running docker with dataset: datasets/sample.fasta and matrix: scoring_matrices/BLOSUM62"
+        docker run --rm -v $(pwd)/datasets:/app/datasets -v $(pwd)/scoring_matrices:/app/scoring_matrices -v $(pwd)/results:/app/results msa_analysis python3 /app/code4pipeline.py /app/datasets/datasets/sample.fasta /app/scoring_matrices/scoring_matrices/BLOSUM62
+        echo "Results in /app/results:"
+        ls /app/results
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-01-29T163915.669966.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

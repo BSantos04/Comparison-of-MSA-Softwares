@@ -12,5 +12,11 @@ RUN mamba install -y -c bioconda -c conda-forge psutil=5.9.0
 RUN pip install biopython matplotlib pandas
 
 
-WORKDIR /App
-COPY . /App
+# Create /app directory
+WORKDIR /app
+COPY code4pipeline.py /app/
+COPY datasets /app/datasets
+COPY scoring_matrices /app/scoring_matrices
+
+# Set entrypoint
+CMD ["python3", "/app/code4pipeline.py"]

@@ -1,0 +1,11 @@
+host: ynot
+Building DAG of jobs...
+WorkflowError:
+MissingInputException: Missing input files for rule check_inputs:
+    output: MSA_Info_{dataset|basename}
+    affected files:
+        a
+MissingInputException: Missing input files for rule run_analysis:
+    output: MSA_Info_{dataset|basename}
+    affected files:
+        a
