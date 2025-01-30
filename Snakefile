@@ -20,14 +20,6 @@ rule all:
 rule build_docker:
     shell:
         "docker build -t msa_analysis . && touch {output}"
-rule check_parameters:
-    output:
-        "parameters_checked"
-    run:
-        # Check if 'dataset' and 'matrix' are in the config
-        if not config.get("dataset") or not config.get("matrix"):
-            raise ValueError("Usage: snakemake --config dataset={path/to/dataset} matrix={path/to/scoring/matrix}")
-        touch(output)
 
 rule run_analysis:
     input:
