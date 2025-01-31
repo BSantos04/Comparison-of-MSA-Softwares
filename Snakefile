@@ -19,21 +19,30 @@ except ValueError as e:
 # Define the final target
 rule all:
     input:
-        directory(f"MSA_Info/{dataset_basename}")  # Use pre-extracted dataset name
+        f"MSA_Info_{dataset_basename}"  
 
 rule build_docker:
+    # Create a dummy file to track completion
+    output:
+        "msa_info.built"  
+    # Build docker image
     shell:
-        "docker build -t msa_analysis ."
+        """
+        docker build -t msa_info .
+        touch msa_info.built  
+        """
 
 rule run_analysis:
+    # Specify config parameters and ensure docker is built
     input:
-        dataset=dataset,
-        matrix=matrix
+        dataset=config["dataset"],  
+        matrix=config["matrix"],
+        docker_built="msa_info.built"   
     output:
-        directory(f"MSA_Info/{dataset_basename}")  # Use the extracted dataset name
+        directory(f"MSA_Info_{dataset_basename}")  
     shell:
         """
         echo "Running docker with dataset: {input.dataset} and matrix: {input.matrix}"
-        docker run --rm -v $(pwd)/datasets:/app/datasets -v $(pwd)/scoring_matrices:/app/scoring_matrices -v $(pwd):/app msa_analysis python3 /app/code4pipeline.py /app/{input.dataset} /app/{input.matrix}
+        docker run --rm -v $(pwd)/datasets:/app/datasets -v $(pwd)/scoring_matrices:/app/scoring_matrices -v $(pwd):/app msa_info python3 /app/code4pipeline.py /app/{input.dataset} /app/{input.matrix}
         """
-    
+
