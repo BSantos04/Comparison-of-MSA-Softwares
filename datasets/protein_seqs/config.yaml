@@ -1,0 +1,3 @@
+dataset: path/to/my_dataset.fasta
+matrix: path/to/scoring_matrix.txt
+

@@ -1,0 +1,17 @@
+
+MSA Software with the least RAM usage: KAlign2
+
+Fastest MSA Software(s): KAlign2
+
+MSA Software with the least CPU usage: MAFFT
+
+MSA Software(s) with the best alignments: MUSCLE
+
+MSA Software(s) with the best overall score: MAFFT
+
+
+MSA Software  SP-Score  RAM Usage     Time  CPU Usage  Overall Score
+       MAFFT    103165      688.0 1.022043       27.2       5.788621
+      MUSCLE    103253      756.0 5.572778      100.0       5.052632
+     KAlign2    103162      684.0 0.221396       50.0       5.609188
+ClustalOmega    103034      760.0 2.874435      100.0       0.504233
