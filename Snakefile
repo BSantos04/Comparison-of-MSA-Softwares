@@ -10,7 +10,7 @@ try:
         raise ValueError("Error: Missing required parameters.\nUsage: snakemake --config dataset={path/to/dataset} matrix={path/to/scoring/matrix}")
 
     # Extract the dataset basename
-    dataset_basename = os.path.basename(dataset)
+    dataset_basename = os.path.basename(dataset).split(".")[0]
 
 except ValueError as e:
     print(e)
@@ -43,6 +43,11 @@ rule run_analysis:
     shell:
         """
         echo "Running docker with dataset: {input.dataset} and matrix: {input.matrix}"
-        docker run --rm -v $(pwd)/datasets:/app/datasets -v $(pwd)/scoring_matrices:/app/scoring_matrices -v $(pwd):/app msa_info python3 /app/code4pipeline.py /app/{input.dataset} /app/{input.matrix}
+        docker run --user $(id -u):$(id -g) --rm \
+            -v $(pwd)/datasets:/app/datasets \
+            -v $(pwd)/scoring_matrices:/app/scoring_matrices \
+            -v $(pwd):/app \
+            msa_info python3 /app/code4pipeline.py /app/{input.dataset} /app/{input.matrix}
+
         """
 
