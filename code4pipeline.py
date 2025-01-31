@@ -31,7 +31,7 @@ class msa_softwares:
         baseline_cpu = psutil.cpu_percent(interval=None)
 
         # Start the process
-        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(command, shell=True)
 
         # Initialize tracking variables
         peak_memory = 0
@@ -80,7 +80,6 @@ class msa_softwares:
         # Define the command line to run the software MAFFT
         command = f"mafft {input_file} > {filename}_mafft_aln.fasta"
         
-        print("Running MAFFT...")
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
         
@@ -107,7 +106,6 @@ class msa_softwares:
         # Define the command line to run the software MUSCLE
         command = f"muscle -align {input_file} -output {filename}_muscle_aln.fasta"
         
-        print("Running MUSCLE...")
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
                 
@@ -134,7 +132,7 @@ class msa_softwares:
         filename = input_file.split(".")[0]
         # Define the command line to run the software KALIGN2
         command = f"kalign -i {input_file} -o {filename}_kalign2_aln.fasta -f 0"
-        print("Running KAlign2...")        
+      
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
                 
@@ -163,8 +161,7 @@ class msa_softwares:
                 
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
-          
-        print("Running ClustalOmega...")   
+           
         # Get the directory which the output file will be written
         pwd = os.getcwd()
         aligned_file = os.path.join(pwd, f"{filename}_clustalo_aln.fasta")
@@ -505,18 +502,9 @@ if __name__ == "__main__":
             # Get info from all MSA softwares
 
             mafft_info = msa.mafft(sys.argv[1])
-            print("MAFFT runned!!!")
-            print()
             muscle_info = msa.muscle(sys.argv[1])
-            print("MUSCLE runned!!!")
-            print()
             clustalo_info = msa.clustalo(sys.argv[1])
-            print("ClustalOmega runned!!!")
-            print()
             kalign2_info = msa.kalign2(sys.argv[1])
-            print("KAlign2 runned!!!")
-            print()
-            print("Run Finished!!!")
             
             # Create a dictionary to store the path for every alignment, if they exist
             msa_files = {
@@ -526,7 +514,7 @@ if __name__ == "__main__":
                 "ClustalOmega": clustalo_info[0] if clustalo_info else None
             }
             
-            # Calculate SP-Score for each software if the file exists
+            # Add parameters to respective dictionaries
             if mafft_info:
                 mafft_sp_score = spscore.sp_score(mafft_info[0])
                 all_memories["MAFFT"].append(mafft_info[1])
@@ -629,7 +617,6 @@ if __name__ == "__main__":
             if os.path.exists(file):
                 shutil.move(file, os.path.join(new_folder, os.path.basename(file)))
         
-        # Create a text file containing the results of the process
         # Create a text file containing the results of the process
         with open(f"MSA_Info_{filename}.log", "w") as file:
             file.write(f"\nMSA Software with the least RAM usage: {mem_str}\n\n")
