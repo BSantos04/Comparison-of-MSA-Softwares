@@ -22,10 +22,8 @@ rule all:
         directory(f"MSA_Info/{dataset_basename}")  # Use pre-extracted dataset name
 
 rule build_docker:
-    output:
-        "msa_analysis.built"
     shell:
-        "docker build -t msa_analysis . && touch {output}"
+        "docker build -t msa_analysis ."
 
 rule run_analysis:
     input:
