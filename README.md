@@ -12,6 +12,11 @@ This analysis is made with the purpose of finding out which one is the best as a
 - Docker
 - Snakemake
 
+## Installation
+```
+git clone https://gitlab.com/lbinf_24-25/shimodaira/comparison_of_msa_softwares.git
+```
+
 ## Usage
 ```
 snakemake --config dataset={path/to/dataset} matrix={path/to/scoring/matrix}
@@ -29,16 +34,14 @@ ls MSA_Info_{basename_of_the_dataset}
 
 ## Credits
 https://www.docker.com/
+
 https://snakemake.readthedocs.io/en/stable/ 
+
 https://www.drive5.com/muscle/ 
+
 https://mafft.cbrc.jp/alignment/server/index.html 
+
 http://www.clustal.org/omega/ 
+
 https://msa.sbc.su.se/cgi-bin/msa.cgi 
 
-## Preparação
-
-For everything to run smoothly, we will be working inside a docker. To acquire a docker image with the necessary programs, we will pull the last version of the image from this project's [DockerHub](https://hub.docker.com/r/stargazernex/lbproject/tags).
-```
-docker pull stargazernex/lbproject:<Version>
-```
-Remember to swap <Version> for the last version available in the DockerHub. Alternatively, you may also use the Dockerfile in this repository
