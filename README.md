@@ -25,6 +25,7 @@ Try this:
 sudo usermod -aG docker $USER
 newgrp docker
 ```
+Now you can run the pipeline without any issues:
 ```
 snakemake --config dataset={path/to/dataset} matrix={path/to/scoring/matrix}
 ```
