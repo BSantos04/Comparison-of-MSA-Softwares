@@ -27,6 +27,13 @@ snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM6
 ls MSA_Info_{basename_of_the_dataset}
 ```
 
+## Credits
+https://www.docker.com/
+https://snakemake.readthedocs.io/en/stable/ 
+https://www.drive5.com/muscle/ 
+https://mafft.cbrc.jp/alignment/server/index.html 
+http://www.clustal.org/omega/ 
+https://msa.sbc.su.se/cgi-bin/msa.cgi 
 
 ## Preparação
 
