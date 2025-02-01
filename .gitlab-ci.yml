@@ -1,5 +1,5 @@
 default:
-  image: stargazernex/lbproject:v4
+  image: stargazernex/lbproject:v5
 
 variables:
   LINT_OUTPUT: "lint_results.json"
