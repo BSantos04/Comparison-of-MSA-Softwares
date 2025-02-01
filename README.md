@@ -9,8 +9,8 @@ Among the MSA softwares, we selected: MAFFT, MUSCLE, KAlign2 and ClustalOmega.
 This analysis is made with the purpose of finding out which one is the best as an overall certain circunstances (depending on the used dataset), and helps the user to find out the best software to fulfill his needs.
 
 ## Requirements
-- Docker
-- Snakemake
+- Docker v26.1.3
+- Snakemake v8.27.1
 
 ## Installation
 ```
@@ -18,6 +18,13 @@ git clone https://gitlab.com/lbinf_24-25/shimodaira/comparison_of_msa_softwares.
 ```
 
 ## Usage
+Before running the pipeline, don´t forgot to give give yourself permission to use Docker.
+
+Try this:
+```
+sudo usermod -aG docker $USER
+newgrp docker
+```
 ```
 snakemake --config dataset={path/to/dataset} matrix={path/to/scoring/matrix}
 ```
