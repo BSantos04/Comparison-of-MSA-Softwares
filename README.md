@@ -34,10 +34,15 @@ ls MSA_Info_{basename_of_the_dataset}
 
 ### Expected Outputs
 -Barplot containing the final RAM usage values of every software (RAM_Usage.png)
+
 -Barplot containing the final CPU usage values of every software (CPU_Usage.png)
+
 -Barplot containing the final SP-Score usage values of every software (SP-Scores.png)
+
 -Barplot containing the final execution eime values of every software (Execution_Times.png)
+
 -Barplot containing the final overall score values of every software (Overall_Scores.png)
+
 -Log file summarizing the final results (MSA_Info_{dataset_basename}.log)
 
 ## Credits
