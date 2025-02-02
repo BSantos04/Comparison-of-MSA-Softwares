@@ -4,14 +4,12 @@ default:
 variables:
   LINT_OUTPUT: "lint_results.json"
   PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
-  DATASET: "datasets/sample.fasta"  
-  SCORING_MATRIX: "scoring_matrices/BLOSUM62"  
-
+  DATASET: "path/to/dataset"
+  SCORING_MATRIX: "path/to/scoring_matrix"
 stages:
   - lint
   - analyze
   - test
-
 
 flake8:
   stage: lint
@@ -25,7 +23,6 @@ flake8:
       - $LINT_OUTPUT
     when: always
     expire_in: 1 day
-
 
 analyze:
   stage: analyze
