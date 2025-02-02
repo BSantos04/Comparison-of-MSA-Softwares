@@ -1,5 +1,5 @@
 default:
-  image: stargazernex/lbproject:v3
+  image: stargazernex/lbproject:v5
 
 variables:
   LINT_OUTPUT: "lint_results.json"
@@ -17,10 +17,7 @@ flake8:
   script:
     - python --version
     - pip install flake8
-    - flake8 --config custom-flake8.conf demo_script.py || true
-    - flake8 --config custom-flake8.conf Script/ || true
-#    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/ || true
-#    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/ || true
+    - flake8 --config custom-flake8.conf code4pipeline.py || true
     - flake8 . --format=json --output-file=$LINT_OUTPUT || true
   artifacts:
     paths:
@@ -50,4 +47,4 @@ analyze:
 test:
   stage: test
   script:
-    - python manage.py test || echo "No tests defined yet."
+    - python3 code4pipeline.py datasets/very_short_seqs.fasta scoring_matrices/BLOSUM62
