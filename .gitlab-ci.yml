@@ -7,8 +7,6 @@ before_script:
 variables:
   LINT_OUTPUT: "lint_results.json"
   PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
-  DATASET: "datasets/sample.fasta"  # Define the dataset path
-  SCORING_MATRIX: "scoring_matrices/BLOSUM62"  # Define the scoring matrix path
 
 stages:
   - lint
@@ -50,8 +48,8 @@ test:
   stage: test
   script:
     - echo "Running code4pipeline.py script"
-    - snakemake --config dataset=$DATASET matrix=$SCORING_MATRIX -p --verbose
-    - OUTPUT_DIR="MSA_Info_$(basename $DATASET)"
+    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62 -p --verbose
+    - OUTPUT_DIR="MSA_Info_sample"
     - |
       if [ -d "$OUTPUT_DIR" ]; then
         echo "Test passed: $OUTPUT_DIR exists.";
