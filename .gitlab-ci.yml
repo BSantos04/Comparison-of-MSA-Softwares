@@ -1,9 +1,7 @@
 default:
-  image: stargazernex/lbproject:v5
+  image: stargazernex/lbproject:v6
 
-  before_script:
-  - pip install snakemake==8.27.1  # Install the specific version of Snakemake
-  
+
 variables:
   LINT_OUTPUT: "lint_results.json"
   PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
@@ -50,7 +48,7 @@ test:
   stage: test
   script:
     - echo "Running code4pipeline.py script"
-    - snakemake --config dataset=$DATASET matrix=$SCORING_MATRIX
+    - snakemake --config dataset=$DATASET matrix=$SCORING_MATRIX --cores 2
     - OUTPUT_DIR="MSA_Info_$(basename $DATASET)"
     - |
       if [ -d "$OUTPUT_DIR" ]; then
