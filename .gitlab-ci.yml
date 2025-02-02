@@ -1,11 +1,12 @@
 default:
-  image: stargazernex/lbproject:v6
+  image: stargazernex/lbproject:v5
 
 variables:
   LINT_OUTPUT: "lint_results.json"
   PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
-  DATASET: "path/to/dataset"
-  SCORING_MATRIX: "path/to/scoring_matrix"
+  DATASET: "path/to/dataset"  # Define the dataset path
+  SCORING_MATRIX: "path/to/scoring_matrix"  # Define the scoring matrix path
+
 stages:
   - lint
   - analyze
@@ -48,7 +49,8 @@ test:
     - echo "Running code4pipeline.py script"
     - python code4pipeline.py $DATASET $SCORING_MATRIX
     - OUTPUT_DIR="MSA_Info_$(basename $DATASET)"
-    - if [ -d "$OUTPUT_DIR" ]; then
+    - |
+      if [ -d "$OUTPUT_DIR" ]; then
         echo "Test passed: $OUTPUT_DIR exists.";
       else
         echo "Test failed: $OUTPUT_DIR does not exist.";
