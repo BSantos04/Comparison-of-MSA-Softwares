@@ -56,7 +56,9 @@ test:
       else
         echo "Test failed: $OUTPUT_DIR does not exist.";
         exit 1;
+      fi
   artifacts:
     paths:
       - .snakemake/log/*.log  # Save all Snakemake log files
     expire_in: 1 week  # Save logs for inspection
+
