@@ -48,7 +48,7 @@ test:
   stage: test
   script:
     - echo "Running code4pipeline.py script"
-    - snakemake --config dataset=$DATASET matrix=$SCORING_MATRIX --cores 2
+    - snakemake --config dataset=$DATASET matrix=$SCORING_MATRIX -p
     - OUTPUT_DIR="MSA_Info_$(basename $DATASET)"
     - |
       if [ -d "$OUTPUT_DIR" ]; then
