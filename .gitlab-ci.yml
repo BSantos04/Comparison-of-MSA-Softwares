@@ -47,7 +47,7 @@ analyze:
 test:
   stage: test
   script:
-    - echo "Running code4pipeline.py script"
+    - echo "Running Snakemake pipeline"
     - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62 -p --verbose --forceall --dryrun
     - OUTPUT_DIR="MSA_Info_sample"
     - |
@@ -56,8 +56,7 @@ test:
       else
         echo "Test failed: $OUTPUT_DIR does not exist.";
         exit 1;
-      fi
-artifacts:
+  artifacts:
     paths:
       - .snakemake/log/*.log  # Save all Snakemake log files
     expire_in: 1 week  # Save logs for inspection
