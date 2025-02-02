@@ -4,8 +4,8 @@ default:
 variables:
   LINT_OUTPUT: "lint_results.json"
   PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
-  DATASET: "path/to/dataset"  # Define the dataset path
-  SCORING_MATRIX: "path/to/scoring_matrix"  # Define the scoring matrix path
+  DATASET: "datasets/sample.fasta"  # Define the dataset path
+  SCORING_MATRIX: "scoring_matrices/BLOSUM62"  # Define the scoring matrix path
 
 stages:
   - lint
@@ -47,7 +47,7 @@ test:
   stage: test
   script:
     - echo "Running code4pipeline.py script"
-    - python code4pipeline.py $DATASET $SCORING_MATRIX
+    - snakemake --config dataset=$DATASET matrix=$SCORING_MATRIX
     - OUTPUT_DIR="MSA_Info_$(basename $DATASET)"
     - |
       if [ -d "$OUTPUT_DIR" ]; then
