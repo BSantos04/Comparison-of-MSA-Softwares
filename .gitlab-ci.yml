@@ -50,5 +50,4 @@ analyze:
 test:
   stage: test
   script:
-    - cd md_sep_script_2
     - python3 code4pipeline.py datasets/very_short_seqs.fasta scoring_matrices/BLOSUM62
