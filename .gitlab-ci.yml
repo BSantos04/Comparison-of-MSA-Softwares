@@ -1,10 +1,11 @@
 default:
-  image: stargazernex/lbproject:v5
+  image: stargazernex/lbproject:v6
 
 variables:
   LINT_OUTPUT: "lint_results.json"
   PREVIOUS_LINT_OUTPUT: "previous_lint_results.json"
-
+  DATASET: "datasets/sample.fasta"  
+  SCORING_MATRIX: "scoring_matrices/BLOSUM62"  
 
 stages:
   - lint
@@ -17,10 +18,7 @@ flake8:
   script:
     - python --version
     - pip install flake8
-    - flake8 --config custom-flake8.conf demo_script.py || true
-    - flake8 --config custom-flake8.conf Script/ || true
-#    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part1/ || true
-#    - flake8 --config custom-flake8.conf Comparison_of_MSA_Softwares_Part2/ || true
+    - flake8 --config custom-flake8.conf code4pipeline.py || true
     - flake8 . --format=json --output-file=$LINT_OUTPUT || true
   artifacts:
     paths:
@@ -50,4 +48,12 @@ analyze:
 test:
   stage: test
   script:
-    - python manage.py test || echo "No tests defined yet."
+    - echo "Running code4pipeline.py script"
+    - python code4pipeline.py $DATASET $SCORING_MATRIX
+    - OUTPUT_DIR="MSA_Info_$(basename $DATASET)"
+    - if [ -d "$OUTPUT_DIR" ]; then
+        echo "Test passed: $OUTPUT_DIR exists.";
+      else
+        echo "Test failed: $OUTPUT_DIR does not exist.";
+        exit 1;
+      fi
