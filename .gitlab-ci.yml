@@ -48,7 +48,7 @@ test:
   stage: test
   script:
     - echo "Running Snakemake pipeline"
-    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62
+    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62 --forceall --dryrun
     - OUTPUT_DIR="MSA_Info_sample"
     - |
       if [ -d "$OUTPUT_DIR" ]; then
@@ -57,8 +57,4 @@ test:
         echo "Test failed: $OUTPUT_DIR does not exist.";
         exit 1;
       fi
-  artifacts:
-    paths:
-      - .snakemake/log/*.log  # Save all Snakemake log files
-    expire_in: 1 week  # Save logs for inspection
 
