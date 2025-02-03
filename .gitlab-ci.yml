@@ -48,7 +48,7 @@ test:
   stage: test
   script:
     - echo "Running Snakemake pipeline"
-    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62 --forceall --dryrun
+    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62 --forceall
     - OUTPUT_DIR="MSA_Info_sample"
     - |
       if [ -d "$OUTPUT_DIR" ]; then
