@@ -50,10 +50,9 @@ run_snakemake:
   script:
     - echo "Running Snakemake"
     - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62  # Run the Snakemake pipeline
-    - OUTPUT_DIR="MSA_Info_sample"
   artifacts:
     paths:
-      - ${OUTPUTDIR}/  # Save results from the output directory as artifacts
+      - MSA_Info_sample  # Save results from the output directory as artifacts
     when: always  # Always collect artifacts
     expire_in: 1 week  # Artifacts will be stored for 1 week
 
@@ -61,11 +60,11 @@ validate_results:
   stage: test
   script:
     - echo "Validating results"
-    - test -f "${OUTPUTDIR}/MSA_Info_sample.log" && echo "MSA_Info_sample.log exists"
-    - test -f "${OUTPUTDIR}/CPU_Usage.png" && echo "CPU_Usage.png exists"
-    - test -f "${OUTPUTDIR}/RAM_Usage.png" && echo "RAM_Usage.png exists"
-    - test -f "${OUTPUTDIR}/Execution_Times.png" && echo "Execution_Times.png exists"
-    - test -f "${OUTPUTDIR}/Overall_Scores.png" && echo "Overall_Scores.png exists"
-    - test -f "${OUTPUTDIR}/SP-Scores.png" && echo "SP-Scores.png exists"
+    - test -f "MSA_Info_sample/MSA_Info_sample.log" && echo "MSA_Info_sample.log exists"
+    - test -f "MSA_Info_sample/CPU_Usage.png" && echo "CPU_Usage.png exists"
+    - test -f "MSA_Info_sample/RAM_Usage.png" && echo "RAM_Usage.png exists"
+    - test -f "MSA_Info_sample/Execution_Times.png" && echo "Execution_Times.png exists"
+    - test -f "MSA_Info_sample/Overall_Scores.png" && echo "Overall_Scores.png exists"
+    - test -f "MSA_Info_sample/SP-Scores.png" && echo "SP-Scores.png exists"
   when: on_success  # Run this job only if the pipeline was ran successfully
 
