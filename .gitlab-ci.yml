@@ -44,17 +44,27 @@ analyze:
     when: always
     expire_in: 1 day
 
-test:
+run_snakemake:
+  stage: workflow
+  script:
+    - echo "Running Snakemake"
+    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62  # Run the Snakemake pipeline
+    - OUTPUT_DIR="MSA_Info_sample"
+  artifacts:
+    paths:
+      - ${OUTPUTDIR}/  # Save results from the output directory as artifacts
+    when: always  # Always collect artifacts
+    expire_in: 1 week  # Artifacts will be stored for 1 week
+
+validate_results:
   stage: test
   script:
-    - echo "Running Snakemake pipeline"
-    - snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62 --forceall
-    - OUTPUT_DIR="MSA_Info_sample"
-    - |
-      if [ -d "$OUTPUT_DIR" ]; then
-        echo "Test passed: $OUTPUT_DIR exists.";
-      else
-        echo "Test failed: $OUTPUT_DIR does not exist.";
-        exit 1;
-      fi
+    - echo "Validating results"
+    - test -f "${OUTPUTDIR}/MSA_Info_sample.log" && echo "MSA_Info_sample.log exists"
+    - test -f "${OUTPUTDIR}/CPU_Usage.png" && echo "CPU_Usage.png exists"
+    - test -f "${OUTPUTDIR}/RAM_Usage.png" && echo "RAM_Usage.png exists"
+    - test -f "${OUTPUTDIR}/Execution_Times.png" && echo "Execution_Times.png exists"
+    - test -f "${OUTPUTDIR}/Overall_Scores.png" && echo "Overall_Scores.png exists"
+    - test -f "${OUTPUTDIR}/SP-Scores.png" && echo "SP-Scores.png exists"
+  when: on_success  # Run this job only if the pipeline was ran successfully
 
