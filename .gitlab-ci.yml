@@ -12,6 +12,7 @@ stages:
   - lint
   - analyze
   - test
+  - workflow
 
 flake8:
   stage: lint
