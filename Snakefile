@@ -73,6 +73,6 @@ rule run_analysis:
             -v $(pwd)/scoring_matrices:/app/scoring_matrices \
             -v $(pwd):/app \
             msa_info python3 /app/code4pipeline.py /app/{input.dataset} /app/{input.matrix}
-
+        rm msa_info.built
         """
 
