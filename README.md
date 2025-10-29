@@ -14,7 +14,7 @@ This analysis is made with the purpose of finding out which one is the best as a
 
 ## Installation
 ```
-git clone https://gitlab.com/lbinf_24-25/shimodaira/comparison_of_msa_softwares.git
+git clone https://github.com/BSantos04/Comparison-of-MSA-Softwares.git
 ```
 
 ## Usage
