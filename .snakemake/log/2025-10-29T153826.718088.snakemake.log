@@ -1,0 +1,39 @@
+host: ynotbs
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job             count
+------------  -------
+all                 1
+build_docker        1
+run_analysis        1
+total               3
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed Oct 29 15:38:26 2025]
+localrule build_docker:
+    output: msa_info.built
+    jobid: 2
+    reason: Missing output files: msa_info.built
+    resources: tmpdir=/tmp
+
+[Wed Oct 29 15:38:30 2025]
+Error in rule build_docker:
+    jobid: 2
+    output: msa_info.built
+    shell:
+        
+        docker build -t msa_info .
+        touch msa_info.built  
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2025-10-29T153826.718088.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
