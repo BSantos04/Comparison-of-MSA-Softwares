@@ -68,11 +68,10 @@ rule run_analysis:
     shell:
         """
         echo "Running docker with dataset: {input.dataset} and matrix: {input.matrix}"
-        docker run --user $(id -u):$(id -g) --rm \
-            -v $(pwd)/datasets:/app/datasets \
+        docker run --user $(id -u):$(id -g) -e MPLCONFIGDIR=/tmp/matplotlib --rm \
+            -v $(pwd)/datasets:/msa/datasets \
             -v $(pwd)/scoring_matrices:/app/scoring_matrices \
-            -v $(pwd):/app \
-            msa_info python3 /app/code4pipeline.py /app/{input.dataset} /app/{input.matrix}
+            -v $(pwd):/msa \
+            msa_info python3 /msa/Python/main.py /msa/{input.dataset} /msa/{input.matrix}
         rm msa_info.built
         """
-

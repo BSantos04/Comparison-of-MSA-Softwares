@@ -13,10 +13,7 @@ RUN pip install biopython matplotlib pandas
 
 
 # Create /app directory
-WORKDIR /app
-COPY code4pipeline.py /app/
-COPY datasets /app/datasets
-COPY scoring_matrices /app/scoring_matrices
-
-# Set entrypoint
-CMD ["python3", "/app/code4pipeline.py"]
+WORKDIR /msa
+COPY datasets /msa/datasets
+COPY scoring_matrices /msa/scoring_matrices
+COPY Python /msa/Python
