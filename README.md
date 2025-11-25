@@ -2,11 +2,11 @@
 
 ## Description
 
-This project make a comparative analysis of four of the most used Multiple Sequence Alignment softwares of our choice, having in consideration RAM usage (in kB),CPU usage (in %), execution time (in seconds), SP-Score and an overall scoring function made by us.
+This project makes a comparative analysis of four of the most used Multiple Sequence Alignment Softwares of our choice, taking into consideration RAM usage (in kB),CPU usage (in %), execution time (in seconds), SP-Score and an overall scoring function made by us.
 
 Among the MSA softwares, we selected: MAFFT, MUSCLE, KAlign2 and ClustalOmega. 
 
-This analysis is made with the purpose of finding out which one is the best as an overall certain circunstances (depending on the used dataset), and helps the user to find out the best software to fulfill his needs.
+This analysis is made with the purpose of finding out which one is the best as an overall, under certain circunstances (depending on the used dataset), and helps the user to find out the best software to fulfill his needs.
 
 ## Requirements
 - Docker v26.1.3
@@ -18,7 +18,7 @@ git clone https://github.com/BSantos04/Comparison-of-MSA-Softwares.git
 ```
 
 ## Usage
-Before running the pipeline, don´t forgot to give give yourself permission to use Docker.
+Before running the pipeline, don´t forget to give give yourself permission to use Docker.
 
 Try this:
 ```
@@ -45,9 +45,9 @@ ls MSA_Info_{basename_of_the_dataset}
 
 - Barplot containing the final CPU usage values of every software (CPU_Usage.png)
 
-- Barplot containing the final SP-Score usage values of every software (SP-Scores.png)
+- Barplot containing the final SP-Score values of every software (SP-Scores.png)
 
-- Barplot containing the final execution eime values of every software (Execution_Times.png)
+- Barplot containing the final execution time values of every software (Execution_Times.png)
 
 - Barplot containing the final overall score values of every software (Overall_Scores.png)
 
