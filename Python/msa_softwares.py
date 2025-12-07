@@ -109,7 +109,6 @@ class msa_softwares:
 
         return aligned_file, memory_used, exec_time, cpu_used
     
-    
     def kalign2(self, input_file):
         """
         Runs the KAlign2 alignment command on the input file and returns the aligned file along with memory and execution time.
@@ -152,6 +151,32 @@ class msa_softwares:
         filename = input_file.split(".")[0]
         # Define the command line to run the software ClustalOmega
         command = f"clustalo -i {input_file} -o {filename}_clustalo_aln.fasta --outfmt fasta"
+                
+        # Get execution time, used memory and CPU usage for that software
+        memory_used, exec_time, cpu_used = self.track_usage(command)
+           
+        # Get the directory which the output file will be written
+        pwd = os.getcwd()
+        aligned_file = os.path.join(pwd, f"{filename}_clustalo_aln.fasta")
+
+        return aligned_file, memory_used, exec_time, cpu_used
+    
+    def prank(self, input_file):
+        """
+        Runs the PRANK alignment command on the input file and returns the aligned file along with memory and execution time.
+        
+        Parameters:
+            input_file: Input FASTA file that contains the sequences to be aligned.
+        
+        Returns:
+            aligned_file: Path to the file aligned by the command line.
+            memory_used: Memory used during the execution of PRANK.
+            exec_time: Time taken for the execution of PRANK.
+        """
+        # Get the first name of the file based on the input file name
+        filename = input_file.split(".")[0]
+        # Define the command line to run the software PRANK
+        command = f"prank -d {input_file} -o {filename}_prank_aln.fasta -f fasta"
                 
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)

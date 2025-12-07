@@ -45,10 +45,10 @@ if __name__ == "__main__":
     an = analysis()
     
     # Create arrays to store every parameter value from the 5 attempts
-    all_memories = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": []}
-    all_times = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": []}
-    all_cpus = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": []}
-    all_sp_scores = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": []}
+    all_memories = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
+    all_times = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
+    all_cpus = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
+    all_sp_scores = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
     
     # Start running every MSA software 5 times
     for i in range(5):
@@ -60,13 +60,15 @@ if __name__ == "__main__":
         muscle_info = msa.muscle(args.dataset)
         clustalo_info = msa.clustalo(args.dataset)
         kalign2_info = msa.kalign2(args.dataset)
+        prank_info = msa.prank(args.dataset)
         
         # Create a dictionary to store the path for every alignment, if they exist
         msa_files = {
             "MAFFT": mafft_info[0] if mafft_info else None,
             "MUSCLE": muscle_info[0] if muscle_info else None,
             "KAlign2": kalign2_info[0] if kalign2_info else None,
-            "ClustalOmega": clustalo_info[0] if clustalo_info else None
+            "ClustalOmega": clustalo_info[0] if clustalo_info else None,
+            "PRANK": prank_info[0] if prank_info else None
         }
         
         # Add parameters to respective dictionaries
@@ -94,6 +96,12 @@ if __name__ == "__main__":
             all_times["ClustalOmega"].append(clustalo_info[2])
             all_cpus["ClustalOmega"].append(clustalo_info[3])
             all_sp_scores["ClustalOmega"].append(clustalo_sp_score)
+        if prank_info:
+            prank_sp_score = sp.sp_score(prank_info[0])
+            all_memories["PRANK"].append(prank_info[1])
+            all_times["PRANK"].append(prank_info[2])
+            all_cpus["PRANK"].append(prank_info[3])
+            all_sp_scores["PRANK"].append(prank_sp_score)
 
         # Print the results for this run
         print(f"\nResults for Run {i + 1}:")
@@ -105,6 +113,8 @@ if __name__ == "__main__":
             print(f"KAlign2 - SP-Score: {kalign2_sp_score}, Memory: {kalign2_info[1]} KB, Time: {kalign2_info[2]} s, CPU: {kalign2_info[3]}%")
         if clustalo_info:
             print(f"ClustalOmega - SP-Score: {clustalo_sp_score}, Memory: {clustalo_info[1]} KB, Time: {clustalo_info[2]} s, CPU: {clustalo_info[3]}%\n")
+        if prank_info:
+            print(f"ClustalOmega - SP-Score: {prank_sp_score}, Memory: {prank_info[1]} KB, Time: {prank_info[2]} s, CPU: {prank_info[3]}%\n")
 
         # Eliminate the alignments if they exist
         for i in msa_files.values():
