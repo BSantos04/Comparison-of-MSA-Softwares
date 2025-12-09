@@ -1,4 +1,7 @@
 import os
+import subprocess
+import glob
+import shutil
 
 def uniquify(path):
     """
@@ -65,15 +68,30 @@ rule run_analysis:
         docker_built="msa_info.built"   
     output:
         directory(unique_output_folder)  
-    shell:
-        """
-        echo "Running docker with dataset: {input.dataset} and matrix: {input.matrix}"
-        docker run --user $(id -u):$(id -g) -e MPLCONFIGDIR=/tmp/matplotlib --rm \
-            -v $(pwd)/datasets:/msa/datasets \
-            -v $(pwd)/scoring_matrices:/app/scoring_matrices \
-            -v $(pwd):/msa \
-            msa_info python3 /msa/Python/main.py /msa/{input.dataset} /msa/{input.matrix}
-        rm msa_info.built
-        rm *.dnd
-        rm -rf .t_coffee
-        """
+    run:
+        # Define cwd, user ID and group ID variables for Docker command
+        cwd = os.getcwd()
+        user_id = os.getuid()
+        group_id = os.getgid()
+
+        # Docker command-line
+        command = f"docker run --user {user_id}:{group_id} -e MPLCONFIGDIR=/tmp/matplotlib --rm " \
+                f"-v {cwd}/datasets:/msa/datasets " \
+                f"-v {cwd}/scoring_matrices:/msa/scoring_matrices " \
+                f"-v {cwd}:/msa " \
+                f"msa_info python3 /msa/Python/main.py /msa/{input.dataset} /msa/{input.matrix}"
+
+        # Run Docker command-line
+        subprocess.run(command, shell=True, check=True)
+
+        # Remove unnecessary files/folders
+        t_coffee_folder = os.path.abspath(".t_coffee")
+        if os.path.exists(t_coffee_folder):
+            shutil.rmtree(t_coffee_folder)
+    
+        build_flag = os.path.abspath("msa_info.built")
+        if os.path.exists(build_flag):
+            os.remove(build_flag)
+        
+        for dnd in glob.glob("*dnd"):
+            os.remove(dnd)
