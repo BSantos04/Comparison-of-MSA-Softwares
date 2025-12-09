@@ -31,6 +31,18 @@ def uniquify(path):
 
     return path
 
+def safe_sum(values):
+    """
+    Summary:
+        Checks if any value to be summed is not numeric, and if so, return 'N/A', otherwise, it will sum the 'normal' way
+    Parameters:
+        values: List containing all the values to be summed.
+    """
+    # If any value to be summed is not numeric, it will return just 1 'N/A', otherwise it will return the 'normal' sum
+    if any(v == "N/A" or v is None or not isinstance(v, (int, float)) for v in values):
+        return "N/A"
+    return sum(values)
+
 # Just ensuring the code is only executed when the script is run as a standalone program.
 if __name__ == "__main__":
 
@@ -45,30 +57,31 @@ if __name__ == "__main__":
     an = analysis()
     
     # Create arrays to store every parameter value from the 5 attempts
-    all_memories = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
-    all_times = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
-    all_cpus = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
-    all_sp_scores = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "PRANK": []}
+    all_memories = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "T-COFFEE": [], "PRANK": []}
+    all_times = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "T-COFFEE": [], "PRANK": []}
+    all_cpus = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "T-COFFEE": [], "PRANK": []}
+    all_sp_scores = {"MAFFT": [], "MUSCLE": [], "KAlign2": [], "ClustalOmega": [], "T-COFFEE": [], "PRANK": []}
     
     # Start running every MSA software 5 times
     for i in range(5):
         print(f"Run {i + 1}...\n")
         
         # Get info from all MSA softwares
-
         mafft_info = msa.mafft(args.dataset)
         muscle_info = msa.muscle(args.dataset)
         clustalo_info = msa.clustalo(args.dataset)
         kalign2_info = msa.kalign2(args.dataset)
+        tcoffee_info = msa.tcoffee(args.dataset)
         prank_info = msa.prank(args.dataset)
         
         # Create a dictionary to store the path for every alignment, if they exist
         msa_files = {
-            "MAFFT": mafft_info[0] if mafft_info else None,
-            "MUSCLE": muscle_info[0] if muscle_info else None,
-            "KAlign2": kalign2_info[0] if kalign2_info else None,
-            "ClustalOmega": clustalo_info[0] if clustalo_info else None,
-            "PRANK": prank_info[0] if prank_info else None
+            "MAFFT": mafft_info[0],
+            "MUSCLE": muscle_info[0],
+            "KAlign2": kalign2_info[0],
+            "ClustalOmega": clustalo_info[0],
+            "T-COFFEE": tcoffee_info[0],
+            "PRANK": prank_info[0]
         }
         
         # Add parameters to respective dictionaries
@@ -96,6 +109,12 @@ if __name__ == "__main__":
             all_times["ClustalOmega"].append(clustalo_info[2])
             all_cpus["ClustalOmega"].append(clustalo_info[3])
             all_sp_scores["ClustalOmega"].append(clustalo_sp_score)
+        if tcoffee_info:
+            tcoffee_sp_score = sp.sp_score(tcoffee_info[0])
+            all_memories["T-COFFEE"].append(tcoffee_info[1])
+            all_times["T-COFFEE"].append(tcoffee_info[2])
+            all_cpus["T-COFFEE"].append(tcoffee_info[3])
+            all_sp_scores["T-COFFEE"].append(tcoffee_sp_score)
         if prank_info:
             prank_sp_score = sp.sp_score(prank_info[0])
             all_memories["PRANK"].append(prank_info[1])
@@ -106,15 +125,17 @@ if __name__ == "__main__":
         # Print the results for this run
         print(f"\nResults for Run {i + 1}:")
         if mafft_info:
-            print(f"MAFFT - SP-Score: {mafft_sp_score}, Memory: {mafft_info[1]} KB, Time: {mafft_info[2]} s, CPU: {mafft_info[3]}%")
+            print(f"MAFFT - SP-Score: {mafft_sp_score}, Memory (KB): {mafft_info[1]}, Time (s): {mafft_info[2]}, CPU (%): {mafft_info[3]}")
         if muscle_info:
-            print(f"MUSCLE - SP-Score: {muscle_sp_score}, Memory: {muscle_info[1]} KB, Time: {muscle_info[2]} s, CPU: {muscle_info[3]}%")
+            print(f"MUSCLE - SP-Score: {muscle_sp_score}, Memory (KB): {muscle_info[1]}, Time (s): {muscle_info[2]}, CPU (%): {muscle_info[3]}")
         if kalign2_info:
-            print(f"KAlign2 - SP-Score: {kalign2_sp_score}, Memory: {kalign2_info[1]} KB, Time: {kalign2_info[2]} s, CPU: {kalign2_info[3]}%")
+            print(f"KAlign2 - SP-Score: {kalign2_sp_score}, Memory (KB): {kalign2_info[1]}, Time (s): {kalign2_info[2]}, CPU (%): {kalign2_info[3]}")
         if clustalo_info:
-            print(f"ClustalOmega - SP-Score: {clustalo_sp_score}, Memory: {clustalo_info[1]} KB, Time: {clustalo_info[2]} s, CPU: {clustalo_info[3]}%\n")
+            print(f"ClustalOmega - SP-Score: {clustalo_sp_score}, Memory (KB): {clustalo_info[1]}, Time (s): {clustalo_info[2]}, CPU (%): {clustalo_info[3]}")
+        if tcoffee_info:
+            print(f"T-COFFEE - SP-Score: {tcoffee_sp_score}, Memory (KB): {tcoffee_info[1]}, Time (s): {tcoffee_info[2]}, CPU (%): {tcoffee_info[3]}")
         if prank_info:
-            print(f"ClustalOmega - SP-Score: {prank_sp_score}, Memory: {prank_info[1]} KB, Time: {prank_info[2]} s, CPU: {prank_info[3]}%\n")
+            print(f"PRANK - SP-Score: {prank_sp_score}, Memory (KB): {prank_info[1]}, Time (s): {prank_info[2]}, CPU (%): {prank_info[3]}\n")
 
         # Eliminate the alignments if they exist
         for i in msa_files.values():
@@ -140,10 +161,10 @@ if __name__ == "__main__":
         normalized_sp_score = an.normalized_score(best_sp_scores[j], best_sp_scores)  
         normalized_memory = an.normalized_score(best_memories[j], best_memories, 1)  
         normalized_time = an.normalized_score(best_times[j], best_times, 1)  
-        normalized_cpu = an.normalized_score(best_cpus[j], best_cpus, 1)  
+        normalized_cpu = an.normalized_score(best_cpus[j], best_cpus, 1)
         
         # Sum of all normalized values, max possible score is 8
-        o_scores[j] = normalized_sp_score + normalized_memory + normalized_time + normalized_cpu
+        o_scores[j] = safe_sum([normalized_sp_score + normalized_memory + normalized_time + normalized_cpu])
 
 
     # Create barplots containing the info of every MSA software
@@ -155,20 +176,44 @@ if __name__ == "__main__":
     
     # Obtain the best MSA software for each parameter
     # Get the MSA software(s) with the least memory used
-    mem = [m for m in best_memories if all(best_memories[v] >= best_memories[m] for v in best_memories)]
+    mem = [m for m in best_memories
+           if best_memories[m] is not None 
+           and all(
+            best_memories[v] is not None and best_memories[v] >= best_memories[m] 
+            for v in best_memories)
+    ]
     mem_str = ", ".join(mem)
     # Get the MSA software(s) with the shortest execution time(s)
-    tim = [t for t in best_times if all(best_times[v] >= best_times[t] for v in best_times)]
+    tim = [t for t in best_times
+           if best_times[t] is not None 
+           and all(
+            best_times[v] is not None and best_times[v] >= best_times[t] 
+            for v in best_times)
+    ]
     time_str = ", ".join(tim)
     # Get the MSA software(s) with the least cpu usage
-    cpu = [c for c in best_cpus if all(best_cpus[v] >= best_cpus[c] for v in best_cpus)]
+    cpu = [c for c in best_cpus
+           if best_cpus[c] is not None 
+           and all(
+            best_cpus[v] is not None and best_cpus[v] >= best_cpus[c] 
+            for v in best_cpus)
+    ]
     cpu_str = ", ".join(cpu)
     # Get the MSA software(s) with the highest SP-Score(s) 
-    sp = [s for s in best_sp_scores if all(best_sp_scores[v] <= best_sp_scores[s] for v in best_sp_scores)]
+    sp = [s for s in best_sp_scores
+           if best_sp_scores[s] is not None 
+           and all(
+            best_sp_scores[v] is not None and best_sp_scores[v] <= best_sp_scores[s] 
+            for v in best_sp_scores)
+    ]
     sp_str = ", ".join(sp)
 
     # Get the MSA software(s) with the highest SP-Score(s) 
-    overall = [o for o in o_scores if all(o_scores[v] <= o_scores[o] for v in o_scores)]
+    overall = [o for o in o_scores
+           if isinstance(o_scores[o], float)
+           and all(isinstance(o_scores[v], float) and o_scores[v] <= o_scores[o]
+                   for v in o_scores)
+    ]
     overall_str = ", ".join(overall)
 
     # Create a new folder to add all files generated by the MSA softwares

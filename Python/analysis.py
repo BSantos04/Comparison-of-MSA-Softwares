@@ -23,29 +23,41 @@ class analysis:
         Returns:
             normalized_score: The normalized value.
         """
+        # Turn every value of the dictionary into a list and remove any 'N/A' value
+        scores = [v for v in info_dict.values() if v!="N/A" and isinstance(v, (int, float))]
         
-        scores = list(info_dict.values())
+        # If the list is empty, the normalized value is "N/A"
+        if not scores:
+            normalized_score = "N/A"
         
-        if choice is None:
-            # Normalize SP-Score (higher is better) → range [0,5]
-            min_spscore = min(scores)
-            max_spscore = max(scores)
-            if max_spscore != min_spscore:  
-                normalized_score = 5 * (value - min_spscore) / (max_spscore - min_spscore)
-            else:
-                normalized_score = 5  # If all SP-Scores are the same
+        # If the reference value is also 'N/A', the normalized value will also be 'N/A' as well
+        elif value=="N/A" or value is None:
+            normalized_score = "N/A"
         
+        # Otherwise, it will procide with the normal calculus
         else:
-            # Normalize RAM, Time, and CPU (lower is better) → range [0,1]
-            epsilon = 1e-10  
-            min_score = min(scores) + epsilon
-            max_score = max(scores) + epsilon
-            value += epsilon
-
-            normalized_score = 1 - (value - min_score) / (max_score - min_score)
-        
+            if choice is None:
+                # Normalize SP-Score (higher is better) → range [0,5]
+                min_spscore = min(scores)
+                max_spscore = max(scores)
+                if max_spscore != min_spscore:  
+                    normalized_score = 5 * (value - min_spscore) / (max_spscore - min_spscore)
+                else:
+                    # If all SP-Scores are the same
+                    normalized_score = 5
+            
+            else:
+                # Normalize RAM, Time, and CPU (lower is better) → range [0,1]
+                if min(scores)==max(scores):
+                    normalized_score = 1
+                else:
+                    epsilon = 1e-10  
+                    min_score = min(scores) + epsilon
+                    max_score = max(scores) + epsilon
+                    value += epsilon
+                    normalized_score = 1 - (value - min_score) / (max_score - min_score)
+            
         return normalized_score
-    
 
     def create_bar_plot(self, info_dict, ylabel, title):
         """
@@ -60,9 +72,32 @@ class analysis:
         Returns:
             plot_file_path: The absolute path to the saved bar plot image file.
         """
+        # Create a new dictionary that doesn´t have softwares with 'N/A' values
+        new_dict = {k: v for k,v in info_dict.items() if v!="N/A" and v!=None}
+
+        # If the dict is empty, no plot will be created
+        if not new_dict:
+            return
+        
+        # Clean dictionary to make sure no value is string
+        cleaned_dict = {}
+        for k,v in new_dict.items():
+            if isinstance(v, str):
+                raw = (v.replace("KB", "").replace("%", "").replace("s", "").strip())
+
+                try:
+                    v = float(raw)
+                except ValueError:
+                    continue
+            cleaned_dict[k] = v
+
+        # Return nothing if nothing numeric is in the dictionary
+        if not cleaned_dict:
+            return
+
         # Extract keys and values based on the given dictionary
-        labels = list(info_dict.keys())
-        values = list(info_dict.values())
+        labels = list(cleaned_dict.keys())
+        values = list(cleaned_dict.values())
         
         # Create the bar plot
         fig, ax = plt.subplots()
@@ -123,10 +158,10 @@ class analysis:
         # Create a dictionary containing the data that will be used to create the table
         d = {
             "MSA Software": list(info_dict.keys()),
-            "SP-Score": sp_list,
-            "RAM Usage": memories_list,
-            "Time": times_list,
-            "CPU Usage": cpu_list,
+            "SP-Score": ["N/A" if i==None else i for i in sp_list],
+            "RAM Usage (KB)": ["N/A" if i==None else i for i in memories_list],
+            "Time (s)": ["N/A" if i==None else i for i in times_list],
+            "CPU Usage (%)": ["N/A" if i==None else i for i in cpu_list],
             "Overall Score": o_list}
         
         # Convert the data into a dataframe
@@ -149,20 +184,27 @@ class analysis:
         Returns:
             best_value: The value that is most significantly different from the mean.
         """
+        # Filter the values for 'valid' values (not 'N/A')
+        filtered_values = [v for v in values if v!="N/A" and v!=None and isinstance(v, (int, float))]
+
+        # If the list only contained 'N/A', the function will return 'N/A' as well
+        if not filtered_values:
+            return None
+        
         # Calculate the mean of the list
-        mean_value = sum(values) / len(values)
+        mean_value = sum(filtered_values) / len(filtered_values)
         
         # Calculate the standard deviation
-        variance = sum((x - mean_value) ** 2 for x in values) / (len(values) - 1)
+        variance = sum((x - mean_value) ** 2 for x in filtered_values) / (len(filtered_values) - 1)
         std_dev = math.sqrt(variance)
         
         # If std_dev is zero, than all the values of the list are the same, so we just pick one to return
         if std_dev == 0:
-            return values[0]
+            return filtered_values[0]
         else:
             # Perform t-tests to compare each value against the mean
             t_stats = []
-            for value in values:
+            for value in filtered_values:
                 # Calculate t-statistic for each value
                 t_stat = (value - mean_value) / std_dev
                 t_stats.append(t_stat)
@@ -173,6 +215,6 @@ class analysis:
             # Determine the "best" value based on the lowest p-value
             min_p_value = min(p_values)
             best_value_index = p_values.index(min_p_value)
-            best_value = values[best_value_index]
+            best_value = filtered_values[best_value_index]
             
             return best_value

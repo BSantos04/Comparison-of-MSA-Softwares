@@ -18,7 +18,7 @@ git clone https://github.com/BSantos04/Comparison-of-MSA-Softwares.git
 ```
 
 ## Usage
-Before running the pipeline, don´t forget to give give yourself permission to use Docker.
+Before running the pipeline, don't forget to give give yourself permission to use Docker.
 
 Try this:
 ```
@@ -32,8 +32,13 @@ snakemake --config dataset={path/to/dataset} matrix={path/to/scoring/matrix}
 
 ### Example
 ```
-snakemake --config dataset=datasets/sample.fasta matrix=scoring_matrices/BLOSUM62
+snakemake --config dataset=datasets/dna_seqs/sample.fasta matrix=scoring_matrices/NUCLEOTIDE
 ```
+```
+snakemake --config dataset=datasets/protein_seqs/sample.fasta matrix=scoring_matrices/BLOSUM62
+```
+
+Disclaimer: BLOSUM matrices must be used with protein sequences, while the NUCLEOTIDE matrix is used with DNA alignments.
 
 ### Check Results
 ```

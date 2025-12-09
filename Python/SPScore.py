@@ -21,20 +21,23 @@ class SPScore:
         Yields:
             ((row_id, col_id), parse_matrix(matrix_cell)): Tuple matrix containing each possible pair of nucleotides/proteins and their respective scores.
         """
-        # Reading and splitting all the lines/rows of the matrix
-        rows = (line.rstrip().split() for line in file)
-        
-        # Extracting the headers/column identifiers of the matrix
-        header = next(rows)
-        
-        # Processing rows
-        # Ensuring that every character is in upper case
-        for row in rows:
-            row_id = row[0].upper()
+        try:
+            # Reading and splitting all the lines/rows of the matrix
+            rows = (line.rstrip().split() for line in file)
             
-            # Iterating through matrix cells, pairing each column identifier with its corresponding matrix value
-            for col_id, matrix_cell in zip(header, row[1:]):
-                yield ((row_id, col_id), parse_matrix(matrix_cell))
+            # Extracting the headers/column identifiers of the matrix
+            header = next(rows)
+            
+            # Processing rows
+            # Ensuring that every character is in upper case
+            for row in rows:
+                row_id = row[0].upper()
+                
+                # Iterating through matrix cells, pairing each column identifier with its corresponding matrix value
+                for col_id, matrix_cell in zip(header, row[1:]):
+                    yield ((row_id, col_id), parse_matrix(matrix_cell))
+        except:
+            raise Exception
 
     def load_matrix(self, matrix_file):
         """
@@ -123,20 +126,26 @@ class SPScore:
             sp_score: SP-Score calculated for the input aligned file.
 
         """
-        # Parsing the aligned FASTA file into an AlignIO object
-        alignment = AlignIO.read(aligned_file, "fasta")
-        
-        # Determine the number of sequences on the aligned file and creating an object to handle the SP-Score value
-        num_seqs = len(alignment)
-        sp_score = 0
+        if aligned_file==None:
+            return "N/A"
+        else:
+            try:
+                # Parsing the aligned FASTA file into an AlignIO object
+                alignment = AlignIO.read(aligned_file, "fasta")
+                
+                # Determine the number of sequences on the aligned file and creating an object to handle the SP-Score value
+                num_seqs = len(alignment)
+                sp_score = 0
 
-        # Calculates the pairwise score for every pair of sequences of the file
-        for i in range(num_seqs):
-            for j in range(i + 1, num_seqs):
-                # We are just ensuring that every character of the sequences are upper case
-                seq1 = str(alignment[i].seq).upper()
-                seq2 = str(alignment[j].seq).upper()
-                # Add all the obtained pairwise score values to the sp_score object
-                sp_score += self.pairwise_score(seq1, seq2)
+                # Calculates the pairwise score for every pair of sequences of the file
+                for i in range(num_seqs):
+                    for j in range(i + 1, num_seqs):
+                        # We are just ensuring that every character of the sequences are upper case
+                        seq1 = str(alignment[i].seq).upper()
+                        seq2 = str(alignment[j].seq).upper()
+                        # Add all the obtained pairwise score values to the sp_score object
+                        sp_score += self.pairwise_score(seq1, seq2)
 
-        return sp_score
+                return sp_score
+            except:
+                raise Exception

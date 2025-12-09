@@ -74,4 +74,6 @@ rule run_analysis:
             -v $(pwd):/msa \
             msa_info python3 /msa/Python/main.py /msa/{input.dataset} /msa/{input.matrix}
         rm msa_info.built
+        rm *.dnd
+        rm -rf .t_coffee
         """
