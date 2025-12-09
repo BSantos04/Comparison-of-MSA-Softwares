@@ -4,13 +4,13 @@
 
 This project makes a comparative analysis of four of the most used Multiple Sequence Alignment Softwares of our choice, taking into consideration RAM usage (in kB),CPU usage (in %), execution time (in seconds), SP-Score and an overall scoring function made by us.
 
-Among the MSA softwares, we selected: MAFFT, MUSCLE, KAlign2 and ClustalOmega. 
+Among the MSA softwares, those were selected: MAFFT, MUSCLE, KAlign2, ClustalOmega, T-COFFEE and PRANK.
 
 This analysis is made with the purpose of finding out which one is the best as an overall, under certain circunstances (depending on the used dataset), and helps the user to find out the best software to fulfill his needs.
 
 ## Requirements
-- Docker v26.1.3
-- Snakemake v8.27.1
+- Docker >= v20.10 (tested with v26.1.3)
+- Snakemake >= v5.19 (tested with v8.27.1)
 
 ## Installation
 ```
@@ -59,15 +59,18 @@ ls MSA_Info_{basename_of_the_dataset}
 - Log file summarizing the final results (MSA_Info_{dataset_basename}.log)
 
 ## Credits
-https://www.docker.com/
+- [Docker] https://www.docker.com/
 
-https://snakemake.readthedocs.io/en/stable/ 
+- [Snakemake] https://snakemake.readthedocs.io/en/stable/ 
 
-https://www.drive5.com/muscle/ 
+- [MUSCLE] https://www.drive5.com/muscle/ 
 
-https://mafft.cbrc.jp/alignment/server/index.html 
+- [MAFFT] https://mafft.cbrc.jp/alignment/server/index.html 
 
-http://www.clustal.org/omega/ 
+- [ClustalOmega] http://www.clustal.org/omega/ 
 
-https://msa.sbc.su.se/cgi-bin/msa.cgi 
+- [KAlign2] https://msa.sbc.su.se/cgi-bin/msa.cgi 
 
+- [T-COFFEE] https://tcoffee.crg.eu/apps/tcoffee/index.html
+
+- [PRANK] https://ariloytynoja.github.io/prank-msa/
