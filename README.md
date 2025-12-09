@@ -74,3 +74,7 @@ ls MSA_Info_{basename_of_the_dataset}
 - [T-COFFEE] https://tcoffee.crg.eu/apps/tcoffee/index.html
 
 - [PRANK] https://ariloytynoja.github.io/prank-msa/
+
+- [BLOSUM] https://www.ncbi.nlm.nih.gov/blast/html/sub_matrix.html
+
+- [NUCLEOTIDE] https://www.nlm.nih.gov/ncbi/workshops/2023-08_BLAST_evol/blast_score.html
