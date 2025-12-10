@@ -75,7 +75,11 @@ rule run_analysis:
         group_id = os.getgid()
 
         # Docker command-line
-        command = f"docker run --user {user_id}:{group_id} -e MPLCONFIGDIR=/tmp/matplotlib --rm " \
+        command = f"docker run --user {user_id}:{group_id} --rm " \
+                f"-e MPLCONFIGDIR=/tmp/matplotlib " \
+                f"-e TMPDIR=/tmp/ " \
+                f"-e HOME=/msa " \
+                f"-e HOME_4_TCOFFEE=/msa " \
                 f"-v {cwd}/datasets:/msa/datasets " \
                 f"-v {cwd}/scoring_matrices:/msa/scoring_matrices " \
                 f"-v {cwd}:/msa " \
