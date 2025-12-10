@@ -72,7 +72,7 @@ class msa_softwares:
         aligned_file = f"{filename}_mafft_aln.fasta"
 
         # Define the command line to run the software MAFFT
-        command = f"mafft {input_file} > {aligned_file}"
+        command = f"mafft {os.path.abspath(input_file)} > {aligned_file}"
         
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
@@ -103,7 +103,7 @@ class msa_softwares:
         aligned_file = f"{filename}_muscle_aln.fasta"
 
         # Define the command line to run the software MUSCLE
-        command = f"muscle -align {input_file} -output {aligned_file}"
+        command = f"muscle -align {os.path.abspath(input_file)} -output {aligned_file}"
         
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
@@ -134,7 +134,7 @@ class msa_softwares:
         aligned_file = f"{filename}_kalign2_aln.fasta"
 
         # Define the command line to run the software KALIGN2
-        command = f"kalign -i {input_file} -o {aligned_file} -f 0"
+        command = f"kalign -i {os.path.abspath(input_file)} -o {aligned_file} -f 0"
 
 
         # Get execution time, used memory and CPU usage for that software
@@ -166,7 +166,7 @@ class msa_softwares:
         aligned_file = f"{filename}_clustalo_aln.fasta"
 
         # Define the command line to run the software ClustalOmega
-        command = f"clustalo -i {input_file} -o {aligned_file} --outfmt fasta"
+        command = f"clustalo -i {os.path.abspath(input_file)} -o {aligned_file} --outfmt fasta"
                 
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
@@ -196,8 +196,8 @@ class msa_softwares:
         # Get the path which the output file will be written
         aligned_file = f"{filename}_tcoffee_aln.fasta"
 
-        # Define the command line to run the software PRANK
-        command = f"t_coffee {input_file} -outfile {aligned_file} -output fasta_aln"
+        # Define the command line to run the software T-COFFEE
+        command = f"t_coffee {os.path.abspath(input_file)} -outfile {aligned_file} -output fasta_aln"
                 
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
@@ -227,8 +227,8 @@ class msa_softwares:
         # Get the path which the output file will be written
         aligned_file = f"{filename}_prank_aln.best.fas"
 
-        # Define the command line to run the software ClustalOmega
-        command = f"prank -d={input_file} -o={filename}_prank_aln"
+        # Define the command line to run the software PRANK
+        command = f"prank -d={os.path.abspath(input_file)} -o={filename}_prank_aln"
                 
         # Get execution time, used memory and CPU usage for that software
         memory_used, exec_time, cpu_used = self.track_usage(command)
